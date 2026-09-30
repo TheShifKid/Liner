@@ -52,11 +52,11 @@ export default async function ArtistPage(props: PageProps<"/artist/[mbid]">) {
         <h1 dir="auto" className="font-display text-5xl font-extrabold tracking-tight sm:text-7xl">
           {artist.name}
         </h1>
-        <p className="mt-3 text-sm text-ink-2">
+        <p className="mt-3 text-sm text-text-2">
           {genres.slice(0, 4).join(" · ")}
           {ratings.length > 0 && (
             <span className="num ml-2 text-muted">
-              · you’ve rated {ratings.length} · avg {formatScore(avg, 2)}
+              · you’ve rated {ratings.length} · avg {formatScore(avg)}
             </span>
           )}
         </p>
@@ -68,7 +68,7 @@ export default async function ArtistPage(props: PageProps<"/artist/[mbid]">) {
         return (
           <section key={k.name}>
             <SectionTitle>{k.name}</SectionTitle>
-            <div className="grid grid-cols-2 gap-x-5 gap-y-8 sm:grid-cols-4 lg:grid-cols-6">
+            <div className="grid grid-cols-2 gap-x-5 gap-y-9 sm:grid-cols-4 lg:grid-cols-6">
               {albums.map((a) => (
                 <AlbumCard key={a.mbid} album={a} score={scoreOf.get(a.mbid)} />
               ))}

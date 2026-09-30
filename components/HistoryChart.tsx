@@ -28,18 +28,21 @@ export function replay(events: Ev[]): Point[] {
 }
 
 const W = 640;
-const H = 200;
+const H = 260;
 const PAD = { l: 28, r: 12, t: 12, b: 26 };
 
-export function HistoryChart({ events }: { events: Ev[] }) {
+// React's lint rules flag Date.now() inside a component because a client
+// component could re-render and draw a different chart each time ("impure").
+// This is a server component rendered once per request, so reading the clock
+// is fine; the page passes the time in explicitly to keep that visible.
+export function HistoryChart({ events, now }: { events: Ev[]; now: number }) {
   const pts = replay(events);
   if (pts.length === 0) return null;
 
-  const now = Date.now();
   const t0 = pts[0].t;
   const t1 = Math.max(now, t0 + 3600_000);
   const x = (t: number) => PAD.l + ((t - t0) / (t1 - t0)) * (W - PAD.l - PAD.r);
-  const y = (s: number) => PAD.t + (1 - s / 10) * (H - PAD.t - PAD.b);
+  const y = (s: number) => PAD.t + (1 - s / 100) * (H - PAD.t - PAD.b);
 
   // A "step" path: the score holds flat until the next change, then jumps.
   // That's honest for opinions, which don't glide between values.
@@ -66,19 +69,19 @@ export function HistoryChart({ events }: { events: Ev[] }) {
   return (
     <figure>
       <svg viewBox={`0 0 ${W} ${H}`} className="w-full" role="img" aria-label="Score history chart">
-        {[0, 5, 7, 10].map((s) => (
+        {[0, 50, 70, 100].map((s) => (
           <g key={s}>
-            <line x1={PAD.l} x2={W - PAD.r} y1={y(s)} y2={y(s)} stroke="var(--rule)" strokeDasharray={s % 10 ? "3 4" : undefined} />
+            <line x1={PAD.l} x2={W - PAD.r} y1={y(s)} y2={y(s)} stroke="var(--line)" strokeDasharray={s % 100 ? "3 4" : undefined} />
             <text x={PAD.l - 6} y={y(s) + 4} textAnchor="end" fontSize="10" fill="var(--muted)" fontFamily="var(--font-mono)">
               {s}
             </text>
           </g>
         ))}
         <path d={stepPath("tracks")} fill="none" stroke="var(--muted)" strokeWidth="2" strokeDasharray="5 4" />
-        <path d={stepPath("album")} fill="none" stroke="var(--ink)" strokeWidth="2.5" />
+        <path d={stepPath("album")} fill="none" stroke="var(--text)" strokeWidth="2.5" />
         {pts.map((p, i) =>
           p.album !== null && (i === 0 || pts[i - 1].album !== p.album) ? (
-            <circle key={i} cx={x(p.t)} cy={y(p.album)} r="3.5" fill="var(--paper)" stroke="var(--ink)" strokeWidth="2" />
+            <circle key={i} cx={x(p.t)} cy={y(p.album)} r="3.5" fill="var(--bg)" stroke="var(--text)" strokeWidth="2" />
           ) : null,
         )}
         <text x={PAD.l} y={H - 6} fontSize="10" fill="var(--muted)" fontFamily="var(--font-mono)">
@@ -88,14 +91,14 @@ export function HistoryChart({ events }: { events: Ev[] }) {
           today
         </text>
       </svg>
-      <figcaption className="mt-2 flex flex-wrap gap-x-5 gap-y-1 text-xs text-ink-2">
+      <figcaption className="mt-2 flex flex-wrap gap-x-5 gap-y-1 text-xs text-text-2">
         <span>
-          <span className="mr-1.5 inline-block w-5 border-t-[2.5px] border-ink align-middle" />
+          <span className="mr-1.5 inline-block w-5 border-t-[2.5px] border-text align-middle" />
           album score · now {formatScore(last.album)}
         </span>
         <span>
           <span className="mr-1.5 inline-block w-5 border-t-2 border-dashed border-muted align-middle" />
-          track average · now {formatScore(last.tracks, 2)}
+          track average · now {formatScore(last.tracks)}
         </span>
       </figcaption>
     </figure>

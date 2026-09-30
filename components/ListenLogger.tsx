@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { deleteListen, logListen } from "@/app/actions";
+import { btn } from "./ui";
 
 // Today's date as YYYY-MM-DD in the *browser's* timezone. toISOString() would
 // give the UTC date, which is "yesterday" for part of every evening in Israel.
@@ -24,7 +25,7 @@ export function ListenLogger({
   return (
     <div>
       <form
-        className="flex flex-wrap items-end gap-2"
+        className="space-y-2"
         onSubmit={(e) => {
           e.preventDefault();
           start(async () => {
@@ -33,50 +34,47 @@ export function ListenLogger({
           });
         }}
       >
-        <label className="flex flex-col gap-1">
-          <span className="label">Listened on</span>
+        <div className="flex gap-2">
           <input
             type="date"
             value={day}
             max={localToday()}
             onChange={(e) => setDay(e.target.value)}
-            className="num border border-rule bg-transparent px-2 py-1.5 text-sm outline-none focus:border-ink"
+            aria-label="Listened on"
+            className="num h-9 min-w-0 flex-1 rounded-md border border-line bg-bg px-2 text-sm outline-none focus:border-line-strong"
           />
-        </label>
-        <label className="flex min-w-40 flex-1 flex-col gap-1">
-          <span className="label">Note (optional)</span>
-          <input
-            dir="auto"
-            value={note}
-            onChange={(e) => setNote(e.target.value)}
-            placeholder="On the train, headphones, first time through…"
-            className="border border-rule bg-transparent px-2 py-1.5 text-sm outline-none focus:border-ink"
-          />
-        </label>
-        <button
-          disabled={pending}
-          className="bg-ink px-4 py-2 text-sm font-semibold text-paper transition hover:opacity-85 disabled:opacity-50"
-        >
-          {pending ? "Logging…" : listens.length ? "Log a relisten" : "Log listen"}
-        </button>
+          <button disabled={pending} className={btn.primary}>
+            {pending ? "Logging…" : listens.length ? "Log relisten" : "Log listen"}
+          </button>
+        </div>
+        <input
+          dir="auto"
+          value={note}
+          onChange={(e) => setNote(e.target.value)}
+          placeholder="Note: where, how, first impressions… (optional)"
+          aria-label="Note"
+          className="h-9 w-full rounded-md border border-line bg-bg px-3 text-sm outline-none placeholder:text-muted focus:border-line-strong"
+        />
       </form>
 
       {listens.length > 0 && (
-        <ul className="mt-4 divide-y divide-rule border-y border-rule text-sm">
+        <ul className="mt-4 space-y-1 text-sm">
           {listens.map((l) => (
-            <li key={l.id} className="flex items-center gap-3 py-2">
-              <span className="num w-24 shrink-0 text-ink-2">{l.day}</span>
+            <li key={l.id} className="group flex items-center gap-3 rounded-md px-2 py-1.5 hover:bg-surface-2">
+              <span className="num shrink-0 text-xs text-text-2">
+                {new Date(l.day + "T12:00:00Z").toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}
+              </span>
               {l.relisten && (
-                <span className="label" title="Relisten">
+                <span className="text-xs text-muted" title="Relisten">
                   ↻
                 </span>
               )}
-              <span dir="auto" className="min-w-0 flex-1 truncate text-ink-2">
+              <span dir="auto" className="min-w-0 flex-1 truncate text-xs text-muted">
                 {l.note}
               </span>
               <button
                 onClick={() => start(() => deleteListen(l.id))}
-                className="text-xs text-muted hover:text-low"
+                className="text-xs text-muted opacity-0 hover:text-accent group-hover:opacity-100 focus-visible:opacity-100"
                 aria-label={`Delete listen from ${l.day}`}
               >
                 remove

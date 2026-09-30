@@ -45,7 +45,7 @@ export default async function DiaryPage() {
     <div className="rise space-y-12">
       <header className="flex flex-wrap items-end justify-between gap-4">
         <h1 className="font-display text-5xl font-extrabold tracking-tight">Diary</h1>
-        <p className="num text-sm text-ink-2">
+        <p className="num text-sm text-text-2">
           {yearCount} listens in {thisYear} · {listens.length} all time
         </p>
       </header>
@@ -54,15 +54,15 @@ export default async function DiaryPage() {
 
       {[...months.entries()].map(([month, rows]) => (
         <section key={month}>
-          <h2 className="label section-rule mb-2">
+          <h2 className="mb-2 border-b border-line pb-2 font-display text-xl font-bold">
             {new Date(`${month}-15T12:00:00Z`).toLocaleDateString("en-GB", { month: "long", year: "numeric" })}
           </h2>
-          <ol className="divide-y divide-rule">
+          <ol>
             {rows.map((l) => {
               const score = l.album.ratings[0]?.score ?? null;
               return (
                 <li key={l.id}>
-                  <Link href={`/album/${l.albumMbid}`} className="flex items-center gap-4 py-2.5 hover:bg-paper-2">
+                  <Link href={`/album/${l.albumMbid}`} className="flex items-center gap-4 rounded-lg px-2 py-2.5 transition hover:bg-surface">
                     <div className="w-12 shrink-0 text-center">
                       <div className="num text-2xl font-bold leading-none">{l.listenedOn.getUTCDate()}</div>
                       <div className="label">
@@ -73,7 +73,7 @@ export default async function DiaryPage() {
                       <Cover mbid={l.albumMbid} title={l.album.title} />
                     </div>
                     <div className="min-w-0 flex-1">
-                      <div dir="auto" className="truncate font-display font-semibold">
+                      <div dir="auto" className="truncate font-semibold">
                         {l.album.title}
                         {l.relisten && (
                           <span className="label ml-2 align-middle" title="Relisten">
@@ -81,7 +81,7 @@ export default async function DiaryPage() {
                           </span>
                         )}
                       </div>
-                      <div dir="auto" className="truncate text-sm text-ink-2">
+                      <div dir="auto" className="truncate text-sm text-text-2">
                         {l.album.artistCredit}
                         {l.note && <span className="text-muted"> — {l.note}</span>}
                       </div>
@@ -110,9 +110,9 @@ function ActivityCalendar({ perDay }: { perDay: Map<string, number> }) {
     if (d.getUTCDay() === 0) weeks.push([]);
     weeks[weeks.length - 1].push(new Date(d));
   }
-  const shade = (n: number) => (n === 0 ? "var(--paper-2)" : `color-mix(in oklch, var(--ink) ${Math.min(100, 30 + n * 25)}%, var(--paper))`);
+  const shade = (n: number) => (n === 0 ? "var(--surface-2)" : `color-mix(in oklch, var(--accent) ${Math.min(100, 35 + n * 25)}%, var(--bg))`);
   return (
-    <div className="overflow-x-auto">
+    <div className="no-scrollbar overflow-x-auto rounded-xl border border-line bg-surface p-4">
       <div className="flex w-max gap-[3px]">
         {weeks.map((w, i) => (
           <div key={i} className="flex flex-col gap-[3px]">
@@ -122,7 +122,7 @@ function ActivityCalendar({ perDay }: { perDay: Map<string, number> }) {
                 <div
                   key={dayKey(d)}
                   title={`${dayKey(d)}: ${n} listen${n === 1 ? "" : "s"}`}
-                  className="h-[11px] w-[11px]"
+                  className="h-[11px] w-[11px] rounded-[2px]"
                   style={{ background: shade(n) }}
                 />
               );

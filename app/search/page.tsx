@@ -28,7 +28,7 @@ export default async function SearchPage(props: PageProps<"/search">) {
   return (
     <div className="rise space-y-12">
       <div className="flex items-baseline justify-between gap-4">
-        <h1 dir="auto" className="font-display text-3xl font-extrabold tracking-tight">
+        <h1 dir="auto" className="font-display text-4xl font-extrabold tracking-tight">
           “{q}”
         </h1>
         <span className="label">{result.cached ? "from your library cache" : "fresh from MusicBrainz"}</span>
@@ -42,9 +42,9 @@ export default async function SearchPage(props: PageProps<"/search">) {
               <li key={a.mbid}>
                 <Link
                   href={`/artist/${a.mbid}`}
-                  className="flex items-baseline gap-2 border border-ink px-3 py-1.5 hover:bg-ink hover:text-paper"
+                  className="flex items-baseline gap-2 rounded-full border border-line-strong px-4 py-2 transition hover:bg-surface-2"
                 >
-                  <span dir="auto" className="font-display font-semibold">
+                  <span dir="auto" className="font-semibold">
                     {a.name}
                   </span>
                   {a.disambiguation && <span className="text-xs opacity-60">{a.disambiguation}</span>}
@@ -60,7 +60,7 @@ export default async function SearchPage(props: PageProps<"/search">) {
         {result.albums.length === 0 ? (
           <Empty>Nothing found. Try the artist name plus the album title.</Empty>
         ) : (
-          <div className="grid grid-cols-2 gap-x-5 gap-y-8 sm:grid-cols-4 lg:grid-cols-5">
+          <div className="grid grid-cols-2 gap-x-5 gap-y-9 sm:grid-cols-4 lg:grid-cols-6">
             {result.albums.map((a) => (
               <AlbumCard
                 key={a.mbid}

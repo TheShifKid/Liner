@@ -2,9 +2,8 @@
 
 import { useState, useTransition } from "react";
 import { flagTrack, rateAlbum, rateTrack, saveReview } from "@/app/actions";
-import { average, formatDuration, formatScore, scoreColor } from "@/lib/score";
+import { average, formatDelta, formatDuration, formatScore, scoreColor } from "@/lib/score";
 import { ScoreScrubber } from "./ScoreScrubber";
-import { TrackListenLink } from "./ListenLinks";
 
 type Track = {
   id: string;
@@ -19,21 +18,25 @@ type TrackState = { score: number | null; flag: string | null };
 // The interactive half of the album page. The server page loads everything
 // and hands it over as props; this component keeps a local copy in state so
 // the UI reacts instantly, and fires server actions in the background.
-// That's called an "optimistic update": assume the save will succeed and
-// show the result now, instead of waiting ~100ms for the round trip.
+// That's an "optimistic update": assume the save succeeds and show the result
+// now, instead of waiting for the round trip.
 
 export function AlbumRater({
   album,
   tracks,
+  dir,
   initialTracks,
   initialAlbumScore,
   initialReview,
+  children,
 }: {
-  album: { mbid: string; title: string; artistCredit: string };
+  album: { mbid: string; title: string };
   tracks: Track[];
+  dir: "ltr" | "rtl";
   initialTracks: Record<string, TrackState>;
   initialAlbumScore: number | null;
   initialReview: string;
+  children?: React.ReactNode; // extra sidebar sections (diary, history) rendered by the server
 }) {
   const [trackState, setTrackState] = useState(initialTracks);
   const [albumScore, setAlbumScore] = useState(initialAlbumScore);
@@ -47,72 +50,56 @@ export function AlbumRater({
   const delta = albumScore !== null && trackAvg !== null ? albumScore - trackAvg : null;
   const multiDisc = new Set(tracks.map((t) => t.disc)).size > 1;
   const totalMs = tracks.reduce((s, t) => s + (t.lengthMs ?? 0), 0);
+  const loved = tracks.filter((t) => get(t.id).flag === "love").length;
 
   const setTrack = (id: string, patch: Partial<TrackState>) =>
     setTrackState((s) => ({ ...s, [id]: { ...(s[id] ?? { score: null, flag: null }), ...patch } }));
 
-  return (
-    <div className="grid gap-10 lg:grid-cols-[1fr_320px]">
-      <section>
-        {/* ── Heat strip: the album's shape at a glance ───────────────────── */}
-        <HeatStrip tracks={tracks} get={get} totalMs={totalMs} />
+  const toggleFlag = (id: string, flag: "love" | "skip") => {
+    const next = get(id).flag === flag ? null : flag;
+    setTrack(id, { flag: next });
+    startTransition(() => flagTrack(id, next));
+  };
 
-        <div className="mb-2 mt-8 flex items-baseline justify-between">
-          <h2 className="label">Tracklist</h2>
+  return (
+    <div className="grid gap-x-12 gap-y-10 lg:grid-cols-[minmax(0,1fr)_340px]">
+      <section>
+        <HeatStrip tracks={tracks} get={get} totalMs={totalMs} dir={dir} />
+
+        <div className="mb-1 mt-10 flex items-baseline justify-between">
+          <h2 className="font-display text-xl font-bold">Tracklist</h2>
           <span className="label">
-            {ratedCount}/{tracks.length} rated
+            {ratedCount} of {tracks.length} rated{loved ? ` · ${loved} loved` : ""}
           </span>
         </div>
 
-        {tracks.length === 0 && (
-          <p className="text-sm text-muted">MusicBrainz has no tracklist for this release yet.</p>
-        )}
+        {tracks.length === 0 && <p className="py-6 text-sm text-muted">MusicBrainz has no tracklist for this release yet.</p>}
 
-        <ol className="border-t border-ink">
+        <ol dir={dir}>
           {tracks.map((t, i) => {
             const st = get(t.id);
             const newDisc = multiDisc && (i === 0 || tracks[i - 1].disc !== t.disc);
             return (
               <li key={t.id}>
-                {newDisc && <div className="label border-b border-rule bg-paper-2 px-3 py-1.5">Disc {t.disc}</div>}
+                {newDisc && <div className="label pb-1 pt-5">Disc {t.disc}</div>}
                 <div
-                  className={`group relative grid grid-cols-[auto_auto_1fr_auto] items-center gap-x-3 gap-y-1 border-b border-rule py-2 pl-4 pr-1 sm:grid-cols-[auto_auto_1fr_auto_auto_11rem] ${
-                    st.flag === "skip" ? "opacity-55" : ""
+                  className={`group relative grid grid-cols-[1.75rem_minmax(0,1fr)_auto] items-center gap-x-3 border-b border-line py-1.5 ps-3 transition-colors hover:bg-surface sm:grid-cols-[1.75rem_minmax(0,1fr)_3rem_auto_13rem] ${
+                    st.flag === "skip" ? "text-muted" : ""
                   }`}
                 >
-                  {/* The heat bar: this row's score as a color, down the left edge. */}
-                  <span
-                    aria-hidden
-                    className="absolute inset-y-0 left-0 w-1.5 transition-colors"
-                    style={{ background: scoreColor(st.score) }}
-                  />
-                  <span className="num w-6 text-right text-xs text-muted">{t.number ?? t.position}</span>
-                  <TrackListenLink artist={album.artistCredit} title={t.title} />
-                  <span dir="auto" className="min-w-0 truncate font-medium">
-                    {t.title}
+                  {/* Heat bar: this row's score as a color, down the leading edge. */}
+                  <span aria-hidden className="absolute inset-y-1 start-0 w-[3px] rounded-full" style={{ background: scoreColor(st.score) }} />
+                  <span className="num text-end text-xs text-muted">{t.number ?? t.position}</span>
+                  <span className="flex min-w-0 items-center gap-2">
+                    <span className={`truncate font-medium ${st.flag === "skip" ? "line-through decoration-line-strong" : ""}`}>{t.title}</span>
+                    {st.flag === "love" && <Heart filled className="h-3 w-3 shrink-0 text-love" />}
                   </span>
-                  <span className="num hidden text-xs text-muted sm:inline">{formatDuration(t.lengthMs)}</span>
-                  <span className="flex items-center gap-0.5">
-                    <FlagButton
-                      kind="love"
-                      active={st.flag === "love"}
-                      onClick={() => {
-                        const flag = st.flag === "love" ? null : "love";
-                        setTrack(t.id, { flag });
-                        startTransition(() => flagTrack(t.id, flag));
-                      }}
-                    />
-                    <FlagButton
-                      kind="skip"
-                      active={st.flag === "skip"}
-                      onClick={() => {
-                        const flag = st.flag === "skip" ? null : "skip";
-                        setTrack(t.id, { flag });
-                        startTransition(() => flagTrack(t.id, flag));
-                      }}
-                    />
+                  <span className="num hidden text-end text-xs text-muted sm:block">{formatDuration(t.lengthMs)}</span>
+                  <span className="flex items-center">
+                    <FlagButton kind="love" active={st.flag === "love"} onClick={() => toggleFlag(t.id, "love")} />
+                    <FlagButton kind="skip" active={st.flag === "skip"} onClick={() => toggleFlag(t.id, "skip")} />
                   </span>
-                  <div className="col-span-4 sm:col-span-1">
+                  <div className="col-span-3 pb-1 sm:col-span-1 sm:pb-0">
                     <ScoreScrubber
                       label={`Score for ${t.title}`}
                       value={st.score}
@@ -128,17 +115,16 @@ export function AlbumRater({
           })}
         </ol>
         <p className="mt-3 text-xs text-muted">
-          Click or drag a bar to score · arrow keys move by 0.5 · Delete clears ·{" "}
-          <span className="text-love">♥</span> love · ⏭ skip
+          Drag a bar, or click a score to type it. Arrow keys ±1, with Shift ±10. Delete clears.
         </p>
       </section>
 
       {/* ── Sidebar: the album's own score vs. the sum of its parts ─────── */}
-      <aside className="space-y-8 lg:sticky lg:top-24 lg:self-start">
-        <div>
-          <h2 className="label mb-3">Your album score</h2>
+      <aside className="space-y-6 lg:sticky lg:top-24 lg:self-start">
+        <div className="rounded-xl border border-line bg-surface p-5">
+          <div className="label mb-2">Your album score</div>
           <ScoreScrubber
-            size="lg"
+            variant="hero"
             label="Album score"
             value={albumScore}
             onCommit={(v) => {
@@ -146,31 +132,26 @@ export function AlbumRater({
               startTransition(() => rateAlbum(album.mbid, v));
             }}
           />
-          <dl className="mt-4 grid grid-cols-2 gap-px bg-rule text-sm">
-            <div className="bg-paper py-2 pr-2">
-              <dt className="label">Track average</dt>
-              <dd className="num mt-1 text-xl font-bold">{formatScore(trackAvg, 2)}</dd>
-            </div>
-            <div className="bg-paper py-2 pl-3">
-              <dt className="label">Whole vs parts</dt>
-              <dd className="num mt-1 text-xl font-bold">
-                {delta === null ? "–" : `${delta > 0 ? "+" : ""}${delta.toFixed(2)}`}
-              </dd>
-            </div>
-          </dl>
-          <p className="mt-2 text-xs text-muted">
+          <div className="mt-5 grid grid-cols-2 gap-3">
+            <Stat label="Track average" value={formatScore(trackAvg)} color={trackAvg} />
+            <Stat label="Album vs tracks" value={formatDelta(delta)} />
+          </div>
+          <p className="mt-3 text-xs leading-relaxed text-muted">
             {delta === null
-              ? "Score the album and some tracks to compare."
-              : Math.abs(delta) < 0.25
-                ? "The album is exactly the sum of its songs."
+              ? "Score the album on its own terms, then its songs, and see if the whole beats the sum of its parts."
+              : Math.abs(delta) < 3
+                ? "Right on the sum of its songs."
                 : delta > 0
-                  ? "The album is worth more than its songs: flow, mood, sequencing."
-                  : "Great songs, weaker as a whole album."}
+                  ? "Worth more than its songs: flow, mood, sequencing."
+                  : "Great songs that add up to less as an album."}
           </p>
         </div>
 
-        <div>
-          <h2 className="label mb-2">Review</h2>
+        <div className="rounded-xl border border-line bg-surface p-5">
+          <div className="mb-2 flex items-baseline justify-between">
+            <span className="label">Review</span>
+            <span className="label">{pending ? "saving…" : review && review === savedReview ? "saved" : ""}</span>
+          </div>
           <textarea
             dir="auto"
             value={review}
@@ -181,58 +162,89 @@ export function AlbumRater({
                 startTransition(() => saveReview(album.mbid, review));
               }
             }}
-            rows={5}
+            rows={4}
             placeholder="A few words, if you want. Saves when you click away."
-            className="w-full resize-y border border-rule bg-paper-2/50 p-3 text-sm outline-none focus:border-ink"
+            className="w-full resize-y rounded-md border border-line bg-bg p-3 text-sm leading-relaxed outline-none placeholder:text-muted focus:border-line-strong"
           />
-          <div className="label h-4">{pending ? "Saving…" : review === savedReview && review ? "Saved" : ""}</div>
         </div>
+
+        {children}
       </aside>
     </div>
   );
 }
 
-function HeatStrip({ tracks, get, totalMs }: { tracks: Track[]; get: (id: string) => TrackState; totalMs: number }) {
+function Stat({ label, value, color }: { label: string; value: string; color?: number | null }) {
+  return (
+    <div className="rounded-lg bg-bg px-3 py-2.5">
+      <div className="label">{label}</div>
+      <div className="num mt-1 text-2xl font-bold" style={color != null ? { color: scoreColor(color) } : undefined}>
+        {value}
+      </div>
+    </div>
+  );
+}
+
+function HeatStrip({
+  tracks,
+  get,
+  totalMs,
+  dir,
+}: {
+  tracks: Track[];
+  get: (id: string) => TrackState;
+  totalMs: number;
+  dir: "ltr" | "rtl";
+}) {
   if (!tracks.length) return null;
+  const grow = (t: Track) => (totalMs ? (t.lengthMs ?? totalMs / tracks.length) : 1);
   return (
     <div>
       <div className="mb-2 flex items-baseline justify-between">
-        <h2 className="label">Heatmap</h2>
-        <span className="label">{totalMs ? `${Math.round(totalMs / 60000)} min` : ""}</span>
+        <h2 className="font-display text-xl font-bold">Heatmap</h2>
+        <span className="label">{totalMs ? `${Math.round(totalMs / 60000)} min · width = song length` : ""}</span>
       </div>
       {/* Each block's width is proportional to the song's length, so a
-          ten-minute closer takes up the space it takes up in your evening. */}
-      <div className="flex h-14 gap-0.5">
+          ten-minute closer takes the space it takes in your evening. */}
+      <div dir={dir} className="flex h-12 gap-[3px]">
         {tracks.map((t) => {
           const st = get(t.id);
-          const grow = totalMs ? (t.lengthMs ?? totalMs / tracks.length) : 1;
           return (
             <div
               key={t.id}
-              title={`${t.position}. ${t.title} — ${formatScore(st.score)}`}
-              className="relative min-w-1 transition-colors"
-              style={{ flexGrow: grow, flexBasis: 0, background: scoreColor(st.score) }}
+              title={`${t.position}. ${t.title} · ${formatScore(st.score)}`}
+              className="relative min-w-1.5 overflow-hidden rounded-[3px] transition-colors"
+              style={{ flexGrow: grow(t), flexBasis: 0, background: scoreColor(st.score) }}
             >
-              {st.flag === "love" && <span className="absolute left-1 top-0.5 text-[10px] text-ink">♥</span>}
               {st.flag === "skip" && (
-                <span className="absolute inset-0 bg-[repeating-linear-gradient(135deg,transparent_0_4px,var(--paper)_4px_6px)] opacity-60" />
+                <span className="absolute inset-0 bg-[repeating-linear-gradient(135deg,transparent_0_5px,rgb(0_0_0/0.35)_5px_7px)]" />
               )}
+              {st.flag === "love" && <Heart filled className="absolute start-1 top-1 h-2.5 w-2.5 text-black/60" />}
             </div>
           );
         })}
       </div>
-      <div className="mt-1 flex gap-0.5">
+      <div dir={dir} className="mt-1.5 flex gap-[3px]">
         {tracks.map((t) => (
-          <div
-            key={t.id}
-            className="num min-w-1 truncate text-[10px] text-muted"
-            style={{ flexGrow: totalMs ? (t.lengthMs ?? totalMs / tracks.length) : 1, flexBasis: 0 }}
-          >
+          <div key={t.id} className="num min-w-1.5 truncate text-center text-[10px] text-muted" style={{ flexGrow: grow(t), flexBasis: 0 }}>
             {t.position}
           </div>
         ))}
       </div>
     </div>
+  );
+}
+
+function Heart({ filled, className = "" }: { filled?: boolean; className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden>
+      <path
+        d="M12 21s-7.5-4.6-9.6-9.2C.9 8.5 3 4.5 6.8 4.5c2.2 0 3.7 1.2 5.2 3 1.5-1.8 3-3 5.2-3 3.8 0 5.9 4 4.4 7.3C19.5 16.4 12 21 12 21z"
+        fill={filled ? "currentColor" : "none"}
+        stroke="currentColor"
+        strokeWidth="2.2"
+      />
+    </svg>
   );
 }
 
@@ -245,23 +257,20 @@ function FlagButton({ kind, active, onClick }: { kind: "love" | "skip"; active: 
       aria-pressed={active}
       aria-label={label}
       title={label}
-      className={`grid h-7 w-7 place-items-center transition ${
-        active ? (kind === "love" ? "text-love" : "text-ink") : "text-ink/25 hover:text-ink/60"
+      className={`grid h-8 w-8 place-items-center rounded-md transition ${
+        active
+          ? kind === "love"
+            ? "text-love"
+            : "text-text"
+          : "text-muted opacity-0 hover:bg-surface-2 hover:text-text group-hover:opacity-100 focus-visible:opacity-100 max-sm:opacity-60"
       }`}
     >
       {kind === "love" ? (
-        <svg width="15" height="15" viewBox="0 0 24 24" aria-hidden>
-          <path
-            d="M12 21s-7.5-4.6-9.6-9.2C.9 8.5 3 4.5 6.8 4.5c2.2 0 3.7 1.2 5.2 3 1.5-1.8 3-3 5.2-3 3.8 0 5.9 4 4.4 7.3C19.5 16.4 12 21 12 21z"
-            fill={active ? "currentColor" : "none"}
-            stroke="currentColor"
-            strokeWidth="2"
-          />
-        </svg>
+        <Heart filled={active} className="h-4 w-4" />
       ) : (
-        <svg width="15" height="15" viewBox="0 0 24 24" aria-hidden>
-          <path d="M4 5l9 7-9 7V5z" fill={active ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2" />
-          <path d="M18 5v14" stroke="currentColor" strokeWidth="2.5" />
+        <svg viewBox="0 0 24 24" className="h-4 w-4" aria-hidden>
+          <path d="M5 5l9 7-9 7V5z" fill={active ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2" strokeLinejoin="round" />
+          <path d="M18.5 5v14" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" />
         </svg>
       )}
     </button>

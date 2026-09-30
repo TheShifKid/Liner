@@ -213,16 +213,35 @@ export function pickCanonicalRelease(releases: MbRelease[] = []): MbRelease | un
 }
 
 // Search re-ranking. MusicBrainz scores text similarity only, so an obscure
-// single called "Ok Computer" ties with Radiohead's album. We add a boost for
-// how many releases the group has (log-scaled, so 40 editions isn't 40× better
-// than one) and a bump for full albums over singles.
-export function rankReleaseGroups(groups: MbReleaseGroup[]) {
+// single called "Ok Computer" ties with Radiohead's album. We add:
+//   • a boost for how many releases the group has (log-scaled, so 40
+//     editions isn't 40x better than one): a decent popularity proxy;
+//   • a bump for full albums over singles, a dip for live/compilations;
+//   • an "artist intent" bonus: if the words of the artist's name appear in
+//     the query ("radiohead kid a"), the user told us who they mean, so the
+//     real Radiohead album beats "Radiohead's Kid A: Re-imagined" by a
+//     tribute act, whose *title* happens to contain every word.
+const words = (s: string) =>
+  s
+    .toLowerCase()
+    .normalize("NFKD")
+    .replace(/[̀-ͯ]/g, "") // strip accents: "Björk" → "bjork"
+    .split(/[^\p{L}\p{N}]+/u)
+    .filter(Boolean);
+
+export function rankReleaseGroups(groups: MbReleaseGroup[], query = "") {
+  const q = new Set(words(query));
   const typeBoost: Record<string, number> = { Album: 12, EP: 6, Single: -4 };
+  const artistIntent = (g: MbReleaseGroup) => {
+    const names = (g["artist-credit"] ?? []).map((c) => words(c.name));
+    return names.some((n) => n.length > 0 && n.every((w) => q.has(w))) ? 30 : 0;
+  };
   const weight = (g: MbReleaseGroup) =>
     (g.score ?? 0) +
     8 * Math.log2((g.count ?? 1) + 1) +
     (typeBoost[g["primary-type"] ?? ""] ?? 0) -
-    ((g["secondary-types"]?.length ?? 0) > 0 ? 6 : 0);
+    ((g["secondary-types"]?.length ?? 0) > 0 ? 6 : 0) +
+    artistIntent(g);
   return [...groups].sort((a, b) => weight(b) - weight(a));
 }
 

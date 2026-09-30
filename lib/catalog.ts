@@ -63,7 +63,7 @@ export async function searchCatalog(rawQuery: string) {
     cached = true;
   } else {
     const [groups, artists] = [await MB.searchReleaseGroups(query), await MB.searchArtists(query)];
-    const ranked = MB.rankReleaseGroups(groups);
+    const ranked = MB.rankReleaseGroups(groups, query);
     for (const g of ranked) await upsertAlbumFromGroup(g);
     // Only surface artists that are a strong match, otherwise "blonde" would
     // list five random artists with "blonde" in their name above the album.

@@ -1,48 +1,56 @@
 @import "tailwindcss";
 
 /*
-  Liner's look: printed liner notes. Warm paper, black ink, hairline rules,
-  a squat grotesk for titles and a monospace for every number, so scores read
-  like catalogue numbers. Color is reserved for the scores themselves; that is
-  what makes the heatmaps pop.
+  Liner's look: a record store after closing time. Warm near-black surfaces,
+  paper-white type, a squat grotesk for titles and a monospace for every
+  number, so scores read like catalogue numbers. Color is reserved for two
+  things: the scores themselves, and each album's own cover, which tints its
+  page (see components/CoverTint.tsx). Everything else stays neutral so those
+  two can speak.
+
+  Tokens are CSS variables so the light theme is just a second set of values.
 */
 
 :root {
-  --paper: #f2ede3;
-  --paper-2: #e9e2d4;
-  --ink: #17140f;
-  --ink-2: #4a443a;
-  --muted: #7b7366;
-  --rule: #d4cbb9;
-  --unrated: #d9d1c1;
-  --high: oklch(0.66 0.16 148);
-  --mid: oklch(0.8 0.15 88);
-  --low: oklch(0.62 0.19 28);
-  --love: oklch(0.6 0.2 18);
+  --bg: #0f0e0c;
+  --surface: #181613;
+  --surface-2: #211e1a;
+  --line: #2e2a25;
+  --line-strong: #4a443c;
+  --text: #f3ede2;
+  --text-2: #bdb4a6;
+  --muted: #837a6d;
+  --unrated: #2f2b26;
+  --accent: #ff5b35; /* Liner's own color: logo, focus, active nav */
+  --love: #ff4f6d;
+  --tint: #3a332b; /* replaced per album by the cover's dominant color */
 }
 
-@media (prefers-color-scheme: dark) {
+@media (prefers-color-scheme: light) {
   :root {
-    --paper: #14120f;
-    --paper-2: #1e1b17;
-    --ink: #efe8da;
-    --ink-2: #c3bba9;
-    --muted: #8d8576;
-    --rule: #37322a;
-    --unrated: #3a352d;
+    --bg: #f4efe6;
+    --surface: #fbf8f2;
+    --surface-2: #ebe4d7;
+    --line: #ddd4c4;
+    --line-strong: #b9ae9a;
+    --text: #17140f;
+    --text-2: #4d463b;
+    --muted: #82796b;
+    --unrated: #e2dacb;
+    --tint: #d8cbb4;
   }
 }
 
 @theme inline {
-  --color-paper: var(--paper);
-  --color-paper-2: var(--paper-2);
-  --color-ink: var(--ink);
-  --color-ink-2: var(--ink-2);
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-text: var(--text);
+  --color-text-2: var(--text-2);
   --color-muted: var(--muted);
-  --color-rule: var(--rule);
-  --color-high: var(--high);
-  --color-mid: var(--mid);
-  --color-low: var(--low);
+  --color-accent: var(--accent);
   --color-love: var(--love);
   --font-display: var(--font-bricolage), var(--font-rubik), system-ui, sans-serif;
   --font-sans: var(--font-instrument), var(--font-rubik), system-ui, sans-serif;
@@ -50,67 +58,68 @@
 }
 
 html {
-  background: var(--paper);
-  color: var(--ink);
+  background: var(--bg);
+  color: var(--text);
+  color-scheme: dark light;
 }
 
 body {
-  background: var(--paper);
+  background: var(--bg);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
 }
 
 ::selection {
-  background: var(--ink);
-  color: var(--paper);
+  background: var(--accent);
+  color: #fff;
 }
 
-/* Small caps-ish label style used for section headers and metadata. */
+/* Small uppercase mono label for section headers and metadata. */
 .label {
   font-family: var(--font-mono);
-  font-size: 0.7rem;
-  letter-spacing: 0.08em;
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--muted);
 }
 
-/* Hairline rule with the label sitting on it, like a printed section break. */
-.section-rule {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-}
-.section-rule::after {
-  content: "";
-  flex: 1;
-  border-top: 1px solid var(--rule);
-}
-
-.cover {
-  aspect-ratio: 1;
-  object-fit: cover;
-  background: var(--paper-2);
-  box-shadow: 0 1px 0 var(--rule), 0 10px 24px -14px rgb(0 0 0 / 0.45);
-}
-
-/* Tabular numbers keep columns of scores aligned. */
 .num {
   font-family: var(--font-mono);
   font-variant-numeric: tabular-nums;
 }
 
-/* Visible keyboard focus everywhere, in ink. */
+.cover {
+  aspect-ratio: 1;
+  object-fit: cover;
+  background: var(--surface-2);
+  border-radius: 4px;
+}
+
+.cover-shadow {
+  box-shadow:
+    0 1px 0 rgb(255 255 255 / 0.06) inset,
+    0 30px 60px -20px rgb(0 0 0 / 0.6),
+    0 12px 24px -12px rgb(0 0 0 / 0.5);
+}
+
 :focus-visible {
-  outline: 2px solid var(--ink);
+  outline: 2px solid var(--accent);
   outline-offset: 2px;
 }
 
+/* Entrance: transform only. Content is never invisible, so nothing breaks if
+   the animation doesn't run (background tabs, screenshots, reduced motion). */
 @keyframes rise {
-  from { opacity: 0; transform: translateY(6px); }
-  to { opacity: 1; transform: none; }
+  from { transform: translateY(8px); }
+  to { transform: none; }
 }
-.rise { animation: rise 0.35s ease-out both; }
+.rise { animation: rise 0.4s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
 
 @media (prefers-reduced-motion: reduce) {
   .rise { animation: none; }
 }
+
+/* Hide scrollbars on horizontal shelves but keep them scrollable. */
+.no-scrollbar { scrollbar-width: none; }
+.no-scrollbar::-webkit-scrollbar { display: none; }
