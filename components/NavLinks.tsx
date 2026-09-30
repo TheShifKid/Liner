@@ -4,6 +4,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const NAV = [
+  { href: "/charts", label: "Charts" },
+  { href: "/crate", label: "Crate" },
   { href: "/diary", label: "Diary" },
   { href: "/tiers", label: "Tiers" },
   { href: "/stats", label: "Stats" },
@@ -25,7 +27,7 @@ export function NavLinks({ mobile = false }: { mobile?: boolean }) {
             aria-current={active ? "page" : undefined}
             className={
               mobile
-                ? `flex-1 py-2.5 text-center text-sm font-medium ${active ? "text-text" : "text-muted"}`
+                ? `min-w-0 flex-1 py-2.5 text-center text-[13px] font-medium tracking-tight ${active ? "text-text" : "text-muted"}`
                 : `rounded-full px-3 py-1.5 text-sm font-medium transition ${
                     active ? "bg-surface-2 text-text" : "text-text-2 hover:text-text"
                   }`

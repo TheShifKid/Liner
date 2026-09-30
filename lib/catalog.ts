@@ -2,6 +2,7 @@
 
 import Dexie, { type EntityTable } from "dexie";
 import * as MB from "./musicbrainz";
+import { isObscure, withPopularity } from "./popularity";
 
 // The music catalog, cached in the browser.
 //
@@ -38,6 +39,16 @@ export type CatAlbum = {
   tracks?: CatTrack[];
   releaseMbid?: string | null; // the edition the tracklist came from
   streamLinks?: Record<string, string>; // exact Spotify/Apple/... album links
+  // false = MusicBrainz lists only bootleg/promo releases for it, so it's not
+  // on streaming services. undefined = we don't know yet.
+  official?: boolean;
+  // From ListenBrainz (lib/popularity.ts):
+  listeners?: number;
+  plays?: number;
+  popularityAt?: number;
+  // From Wikipedia's review boxes (lib/critics.ts); null = no reviews found.
+  critics?: import("./critics").Critics | null;
+  criticsAt?: number;
 };
 
 export type CatArtist = {
@@ -58,6 +69,13 @@ export const catalog = new Dexie("liner-catalog") as Dexie & {
   searches: EntityTable<Search, "query">;
 };
 catalog.version(1).stores({ albums: "mbid, artistMbid", artists: "mbid", searches: "query" });
+// Version 2 added bootleg detection and popularity to search results. The
+// upgrade function runs once on each device that has the old version; it
+// clears cached searches so they're fetched again with the new information.
+catalog
+  .version(2)
+  .stores({ albums: "mbid, artistMbid", artists: "mbid", searches: "query" })
+  .upgrade((tx) => tx.table("searches").clear());
 
 const TTL_MS = 7 * 24 * 3600 * 1000; // searches & discographies refresh weekly
 const yearOf = (d?: string | null) => (d && /^\d{4}/.test(d) ? Number(d.slice(0, 4)) : null);
@@ -93,6 +111,7 @@ async function upsertAlbumFromGroup(g: MB.MbReleaseGroup) {
     year: yearOf(g["first-release-date"]),
     // Search results carry no genres, so keep any we already had.
     genres: genres.length ? genres : (prev?.genres ?? []),
+    official: g.releases?.length ? g.releases.some((r) => r.status === "Official") : prev?.official,
   });
 }
 
@@ -100,7 +119,7 @@ export const normalizeQuery = (q: string) => q.trim().toLowerCase().replace(/\s+
 
 export async function searchCatalog(rawQuery: string) {
   const query = normalizeQuery(rawQuery);
-  if (!query) return { albums: [] as CatAlbum[], artists: [] as CatArtist[], cached: true };
+  if (!query) return { albums: [] as CatAlbum[], hidden: [] as CatAlbum[], artists: [] as CatArtist[], cached: true };
 
   const hit = await catalog.searches.get(query);
   let albumIds: string[];
@@ -133,10 +152,24 @@ export async function searchCatalog(rawQuery: string) {
     await catalog.searches.put({ query, albumMbids: albumIds, artistMbids: artistIds, fetchedAt: Date.now() });
   }
 
-  // bulkGet returns rows in the order of the ids we pass, so our ranking holds.
-  const [albums, artists] = await Promise.all([catalog.albums.bulkGet(albumIds), catalog.artists.bulkGet(artistIds)]);
+  // bulkGet returns rows in the order of the ids we pass (MusicBrainz's text
+  // relevance, already re-ranked in musicbrainz.ts).
+  const [found, artists] = await Promise.all([catalog.albums.bulkGet(albumIds), catalog.artists.bulkGet(artistIds)]);
+  const albums = await withPopularity(found.filter((a): a is CatAlbum => !!a));
+
+  // Final order blends two signals: how well the text matched (position in
+  // the relevance ranking) and how many people actually listen (log-scaled,
+  // so 100,000 listeners isn't 100× better than 1,000). The exact album you
+  // typed still wins; among similar matches, the one people play comes first.
+  const n = albums.length;
+  const weight = new Map(albums.map((a, i) => [a.mbid, (n - i) * 2 + 12 * Math.log10((a.listeners ?? 0) + 1)]));
+  albums.sort((a, b) => weight.get(b.mbid)! - weight.get(a.mbid)!);
+
+  // Albums almost nobody streams go behind "show all" (unless that's all we have).
+  const visible = albums.filter((a) => !isObscure(a));
   return {
-    albums: albums.filter((a): a is CatAlbum => !!a),
+    albums: visible.length ? visible : albums,
+    hidden: visible.length ? albums.filter(isObscure) : [],
     artists: artists.filter((a): a is CatArtist => !!a),
     cached,
   };
@@ -231,7 +264,7 @@ export async function ensureDiscography(artistMbid: string) {
     artist = { ...artist!, discography: groups.map((g) => g.id), discographyFetchedAt: Date.now() };
     await catalog.artists.put(artist);
   }
-  const albums = (await catalog.albums.bulkGet(artist!.discography ?? [])).filter((a): a is CatAlbum => !!a);
+  const albums = await withPopularity((await catalog.albums.bulkGet(artist!.discography ?? [])).filter((a): a is CatAlbum => !!a));
   albums.sort((a, b) => (a.year ?? 9999) - (b.year ?? 9999) || a.title.localeCompare(b.title));
   return { artist: artist!, albums };
 }

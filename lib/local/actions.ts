@@ -125,6 +125,20 @@ export function deleteListen(id: string) {
   return local.listens.delete(id);
 }
 
+// ── Crate ───────────────────────────────────────────────────────────────────
+
+export function toggleCrate(snap: AlbumSnap, inCrate: boolean) {
+  return local.transaction("rw", [local.albums, local.crate], async () => {
+    if (inCrate) return local.crate.delete(snap.mbid);
+    await saveSnapshot(snap);
+    await local.crate.put({ mbid: snap.mbid, addedAt: now() });
+  });
+}
+
+export function removeFromCrate(mbids: string[]) {
+  return local.crate.bulkDelete(mbids);
+}
+
 // ── Tier lists ───────────────────────────────────────────────────────────────
 
 export async function createTierList(name: string) {

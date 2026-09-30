@@ -17,6 +17,21 @@ const NOTES: { title: string; file: string; body: string }[] = [
     body: "Every album you search or open is copied from MusicBrainz into a cache in your browser (IndexedDB). Next time, Liner reads its own copy and makes zero network calls, so the app gets faster the more you use it and MusicBrainz gets fewer requests.",
   },
   {
+    title: "Popularity from real listening data",
+    file: "lib/popularity.ts",
+    body: "Search results are ordered by a blend of how well the text matched and how many people actually listen, according to ListenBrainz, MusicBrainz's open listening-data sister project. Albums almost nobody plays (bootlegs, fan tributes) are hidden behind “show all”. Spotify stopped giving apps popularity numbers in February 2026, which is why the data comes from ListenBrainz.",
+  },
+  {
+    title: "Charts as a weekly batch job",
+    file: "scripts/build-charts.mjs",
+    body: "The charts are built once a week, not on every visit: a script gathers thousands of candidate albums, looks up their listeners, genres, critic reviews and release years in batches, ranks them, and saves each chart as a small JSON file served with the site. This “gather → enrich → rank” shape is how most data pipelines work.",
+  },
+  {
+    title: "Critic scores from Wikipedia",
+    file: "lib/critic-scores.mjs",
+    body: "Almost every notable album's Wikipedia article has a “Professional ratings” table (Metacritic, AllMusic, Pitchfork, Rolling Stone…). It's written as a template, so it can be parsed: we cut each table out by counting {{braces}}, read every review's score (4.5/5, 8.7/10, B+) and convert it to 0–100. Wikidata links a MusicBrainz album ID to its article. Charts rank by a Bayesian average, which pulls albums with only a few reviews toward the middle so one rave can't beat a classic with thirty reviews.",
+  },
+  {
     title: "Rate limiting with a serial promise queue",
     file: "lib/musicbrainz.ts",
     body: "MusicBrainz allows about one request per second. All requests join one promise chain, and each waits until 1.1 s have passed since the previous one. If MusicBrainz still answers 503 (busy), we retry after 1, 2, then 4 seconds: exponential backoff.",

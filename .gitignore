@@ -42,3 +42,6 @@ next-env.d.ts
 
 
 
+
+# chart builder request cache
+/.chart-cache/

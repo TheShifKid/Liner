@@ -19,13 +19,14 @@ export type Library = NonNullable<ReturnType<typeof useLibrary>>;
 // takes milliseconds.
 export function useLibrary() {
   return useLiveQuery(async () => {
-    const [albums, albumRatings, trackRatings, events, listens, tierLists] = await Promise.all([
+    const [albums, albumRatings, trackRatings, events, listens, tierLists, crate] = await Promise.all([
       local.albums.toArray(),
       local.albumRatings.toArray(),
       local.trackRatings.toArray(),
       local.events.toArray(),
       local.listens.toArray(),
       local.tierLists.toArray(),
+      local.crate.toArray(),
     ]);
     return {
       albums: new Map<string, AlbumSnap>(albums.map((a) => [a.mbid, a])),
@@ -34,6 +35,7 @@ export function useLibrary() {
       events,
       listens,
       tierLists,
+      crate,
     };
   });
 }
@@ -58,4 +60,23 @@ export function useMyScores(mbids: string[]) {
     const rows = await local.albumRatings.bulkGet(mbids);
     return new Map(rows.filter((r) => r && r.score !== null).map((r) => [r!.albumMbid, r!.score!]));
   }, [key]);
+}
+
+// Is this album in your Crate?
+export function useInCrate(mbid: string) {
+  return useLiveQuery(async () => !!(await local.crate.get(mbid)), [mbid]);
+}
+
+// The whole Crate, newest first, with each album's snapshot and your score
+// (an album you've since rated counts as heard).
+export function useCrate() {
+  return useLiveQuery(async () => {
+    const items = await local.crate.orderBy("addedAt").reverse().toArray();
+    const ids = items.map((i) => i.mbid);
+    const [snaps, ratings] = await Promise.all([local.albums.bulkGet(ids), local.albumRatings.bulkGet(ids)]);
+    return items.flatMap((item, i) => {
+      const album = snaps[i];
+      return album ? [{ ...item, album, score: ratings[i]?.score ?? null }] : [];
+    });
+  });
 }

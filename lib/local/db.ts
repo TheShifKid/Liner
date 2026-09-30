@@ -77,6 +77,10 @@ export type TierList = {
   updatedAt: number;
 };
 
+// The Crate: albums you want to hear. Just the id and when you added it; the
+// album itself is in the albums (snapshot) table like everything else.
+export type CrateItem = { mbid: string; addedAt: number };
+
 export const local = new Dexie("liner") as Dexie & {
   albums: EntityTable<AlbumSnap, "mbid">;
   albumRatings: EntityTable<AlbumRating, "albumMbid">;
@@ -84,6 +88,7 @@ export const local = new Dexie("liner") as Dexie & {
   events: EntityTable<RatingEvent, "id">;
   listens: EntityTable<Listen, "id">;
   tierLists: EntityTable<TierList, "id">;
+  crate: EntityTable<CrateItem, "mbid">;
 };
 
 // The schema string lists the primary key first, then the fields we query by
@@ -98,3 +103,7 @@ local.version(1).stores({
   listens: "id, albumMbid, day",
   tierLists: "id, updatedAt",
 });
+
+// Version 2 adds the Crate. Existing tables are untouched, so upgrading
+// keeps every rating.
+local.version(2).stores({ crate: "mbid, addedAt" });

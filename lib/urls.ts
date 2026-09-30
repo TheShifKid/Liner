@@ -45,3 +45,10 @@ export function placeholderCover(title: string, artist: string) {
 // fails to download, so one flaky image can't make the whole export fail.
 export const BLANK =
   "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
+
+export const chartHref = (id: string) => `/charts/view?id=${id}`;
+
+// Files in /public (like the chart JSON) live under the site's base path on
+// GitHub Pages (/Liner/charts/…). next/link adds it automatically; plain
+// fetch() calls need it added by hand.
+export const asset = (path: string) => `${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}${path}`;

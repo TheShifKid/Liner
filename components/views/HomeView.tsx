@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { AlbumCard, Cover, Empty, ScoreBadge, SectionTitle } from "@/components/ui";
-import { useLibrary } from "@/lib/local/hooks";
+import { useLibrary, type Library } from "@/lib/local/hooks";
+import { ChartsPreview } from "./ChartsView";
 import { average, formatScore, scoreColor } from "@/lib/score";
 import { albumHref, searchHref } from "@/lib/urls";
 
@@ -26,7 +27,8 @@ export function HomeView() {
 
   if (recent.length === 0) {
     return (
-      <div className="rise mx-auto max-w-2xl py-16 text-center">
+      <div className="rise space-y-20">
+      <div className="mx-auto max-w-2xl pt-16 text-center">
         <h1 className="font-display text-5xl font-extrabold leading-[0.95] tracking-tight sm:text-7xl">
           Notes on
           <br />
@@ -50,6 +52,9 @@ export function HomeView() {
             ))}
           </div>
         </div>
+      </div>
+      <CrateStrip lib={lib} />
+      <ChartsPreview />
       </div>
     );
   }
@@ -80,6 +85,8 @@ export function HomeView() {
           ))}
         </div>
       </section>
+
+      <CrateStrip lib={lib} />
 
       <div className="grid gap-12 lg:grid-cols-[1.4fr_1fr]">
         <section>
@@ -135,6 +142,28 @@ export function HomeView() {
           )}
         </section>
       </div>
+
+      <ChartsPreview />
     </div>
+  );
+}
+
+// Albums waiting in your crate that you haven't rated yet.
+function CrateStrip({ lib }: { lib: Library }) {
+  const rated = new Set(lib.albumRatings.filter((r) => r.score !== null).map((r) => r.albumMbid));
+  const items = [...lib.crate]
+    .filter((c) => !rated.has(c.mbid) && lib.albums.has(c.mbid))
+    .sort((a, b) => b.addedAt - a.addedAt)
+    .slice(0, 6);
+  if (!items.length) return null;
+  return (
+    <section>
+      <SectionTitle right={<Link href="/crate" className="label hover:text-text">crate →</Link>}>Up next from your crate</SectionTitle>
+      <div className="grid grid-cols-2 gap-x-5 gap-y-9 sm:grid-cols-4 lg:grid-cols-6">
+        {items.map((c) => (
+          <AlbumCard key={c.mbid} album={lib.albums.get(c.mbid)!} score={null} />
+        ))}
+      </div>
+    </section>
   );
 }

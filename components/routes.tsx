@@ -3,6 +3,7 @@
 import { useSearchParams } from "next/navigation";
 import { AlbumView } from "./views/AlbumView";
 import { ArtistView } from "./views/ArtistView";
+import { ChartView } from "./views/ChartsView";
 import { SearchView } from "./views/SearchView";
 import { TierListEditor } from "./views/TiersView";
 import { WrappedView } from "./views/WrappedView";
@@ -35,4 +36,9 @@ export function TierListRoute() {
 export function WrappedRoute() {
   const year = Number(useSearchParams().get("year")) || new Date().getFullYear();
   return <WrappedView key={year} year={year} />;
+}
+
+export function ChartRoute() {
+  const id = useSearchParams().get("id") ?? "greatest";
+  return <ChartView key={id} id={id} />;
 }

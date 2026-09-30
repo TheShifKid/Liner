@@ -1,0 +1,904 @@
+{
+ "generatedAt": "2026-09-30T20:10:15.281Z",
+ "charts": [
+  {
+   "id": "greatest",
+   "name": "The Greatest Albums",
+   "kind": "overall",
+   "basis": "critics",
+   "count": 100,
+   "top": [
+    {
+     "mbid": "4838a3c9-fd2b-30a5-83eb-e32545b5d7fc",
+     "title": "Exile on Main St.",
+     "artist": "The Rolling Stones"
+    },
+    {
+     "mbid": "ca91cb5a-7ecc-3c46-84a0-0d4951889374",
+     "title": "The Clash",
+     "artist": "The Clash"
+    },
+    {
+     "mbid": "8d73e45e-7ca1-3cb4-ae28-6da76196c17c",
+     "title": "London Calling",
+     "artist": "The Clash"
+    },
+    {
+     "mbid": "416bb5e5-c7d1-3977-8fd7-7c9daf6c2be6",
+     "title": "Rumours",
+     "artist": "Fleetwood Mac"
+    }
+   ]
+  },
+  {
+   "id": "best-2026",
+   "name": "Best of 2026",
+   "kind": "year",
+   "basis": "critics",
+   "count": 65,
+   "top": [
+    {
+     "mbid": "4c4eee61-da1e-4115-8eb9-07e5b671fefe",
+     "title": "you seem pretty sad for a girl so in love",
+     "artist": "Olivia Rodrigo"
+    },
+    {
+     "mbid": "706578f8-fb48-47f2-806d-a047dc408332",
+     "title": "Lost Weekend",
+     "artist": "Phoebe Bridgers"
+    },
+    {
+     "mbid": "cec81633-5419-4f92-b0ac-6e9c508a042f",
+     "title": "U",
+     "artist": "underscores"
+    },
+    {
+     "mbid": "d311b0eb-11b0-4115-a989-c18189b60b2f",
+     "title": "An Undying Love for a Burning World",
+     "artist": "Neurosis"
+    }
+   ]
+  },
+  {
+   "id": "best-2025",
+   "name": "Best of 2025",
+   "kind": "year",
+   "basis": "critics",
+   "count": 90,
+   "top": [
+    {
+     "mbid": "bb3ec118-57df-4eb9-a8fe-a26a70a7dbe0",
+     "title": "LUX",
+     "artist": "ROSALÍA"
+    },
+    {
+     "mbid": "15c3b397-9652-4537-a14b-7eb8489092ff",
+     "title": "Ego Death at a Bachelorette Party",
+     "artist": "Hayley Williams"
+    },
+    {
+     "mbid": "b3073a10-2d7c-484c-b387-e49ae629da3d",
+     "title": "DeBÍ TiRAR MáS FOToS",
+     "artist": "Bad Bunny"
+    },
+    {
+     "mbid": "5e9a3ca5-82ce-47da-9409-83f6f953b4a2",
+     "title": "private music",
+     "artist": "Deftones"
+    }
+   ]
+  },
+  {
+   "id": "best-2024",
+   "name": "Best of 2024",
+   "kind": "year",
+   "basis": "critics",
+   "count": 57,
+   "top": [
+    {
+     "mbid": "fa566e7b-254a-4fab-8aa5-ebcb7592d7f2",
+     "title": "COWBOY CARTER",
+     "artist": "Beyoncé"
+    },
+    {
+     "mbid": "97650540-f489-40e1-957c-6fd67baa739d",
+     "title": "Songs of a Lost World",
+     "artist": "The Cure"
+    },
+    {
+     "mbid": "e0fdb431-0109-420d-8a37-f99eaeb4d671",
+     "title": "BRAT",
+     "artist": "Charli xcx"
+    },
+    {
+     "mbid": "32cb822c-a14e-49ce-a169-f209c5f31e0f",
+     "title": "GNX",
+     "artist": "Kendrick Lamar"
+    }
+   ]
+  },
+  {
+   "id": "hidden-gems",
+   "name": "Hidden Gems",
+   "kind": "overall",
+   "basis": "critics",
+   "count": 100,
+   "top": [
+    {
+     "mbid": "82fd3ab5-0fc9-3a36-8832-65afaf05c2fe",
+     "title": "Filles de Kilimanjaro",
+     "artist": "Miles Davis"
+    },
+    {
+     "mbid": "eb84987d-15bd-3f69-bcd0-a0804c9d1130",
+     "title": "Nefertiti",
+     "artist": "Miles Davis"
+    },
+    {
+     "mbid": "2d7b07d9-9cf4-4ef1-8033-668bd98e9da1",
+     "title": "Both Directions at Once: The Lost Album",
+     "artist": "John Coltrane"
+    },
+    {
+     "mbid": "442d3e54-f7f2-45b7-a743-61e0c2372284",
+     "title": "Diamond Jubilee",
+     "artist": "Cindy Lee"
+    }
+   ]
+  },
+  {
+   "id": "most-listened",
+   "name": "Most Listened",
+   "kind": "overall",
+   "basis": "listeners",
+   "count": 100,
+   "top": [
+    {
+     "mbid": "aa997ea0-2936-40bd-884d-3af8a0e064dc",
+     "title": "Random Access Memories",
+     "artist": "Daft Punk"
+    },
+    {
+     "mbid": "5a676824-18cd-4f7f-89f0-df21623e2042",
+     "title": "Plastic Beach",
+     "artist": "Gorillaz"
+    },
+    {
+     "mbid": "066f840f-e357-436f-bb0a-47ad7cfcd84a",
+     "title": "Humanz",
+     "artist": "Gorillaz"
+    },
+    {
+     "mbid": "f959a46a-a136-3134-9412-6572b23fad95",
+     "title": "Demon Days",
+     "artist": "Gorillaz"
+    }
+   ]
+  },
+  {
+   "id": "hebrew",
+   "name": "Israeli & Hebrew",
+   "kind": "region",
+   "basis": "listeners",
+   "count": 63,
+   "top": [
+    {
+     "mbid": "88e0e066-8a88-445c-84a9-c8ad32efcba6",
+     "title": "חומר מקומי",
+     "artist": "הדג נחש"
+    },
+    {
+     "mbid": "5448a2ae-ebf6-3428-a9e8-79d5e276b2a8",
+     "title": "קדישKaddish",
+     "artist": "Salem"
+    },
+    {
+     "mbid": "3ab51cb5-ad32-49ef-a0f0-85fb50663526",
+     "title": "גם זה יעבור",
+     "artist": "טונה"
+    },
+    {
+     "mbid": "2220b4b2-997c-395a-b88a-e9eb8294ee97",
+     "title": "מציאות נפרדת",
+     "artist": "היהודים"
+    }
+   ]
+  },
+  {
+   "id": "rock",
+   "name": "Rock",
+   "kind": "genre",
+   "basis": "critics",
+   "count": 100,
+   "top": [
+    {
+     "mbid": "4838a3c9-fd2b-30a5-83eb-e32545b5d7fc",
+     "title": "Exile on Main St.",
+     "artist": "The Rolling Stones"
+    },
+    {
+     "mbid": "ca91cb5a-7ecc-3c46-84a0-0d4951889374",
+     "title": "The Clash",
+     "artist": "The Clash"
+    },
+    {
+     "mbid": "8d73e45e-7ca1-3cb4-ae28-6da76196c17c",
+     "title": "London Calling",
+     "artist": "The Clash"
+    },
+    {
+     "mbid": "416bb5e5-c7d1-3977-8fd7-7c9daf6c2be6",
+     "title": "Rumours",
+     "artist": "Fleetwood Mac"
+    }
+   ]
+  },
+  {
+   "id": "alternative",
+   "name": "Alternative & Indie",
+   "kind": "genre",
+   "basis": "critics",
+   "count": 100,
+   "top": [
+    {
+     "mbid": "8d73e45e-7ca1-3cb4-ae28-6da76196c17c",
+     "title": "London Calling",
+     "artist": "The Clash"
+    },
+    {
+     "mbid": "d8dde278-482c-3cc8-a530-fea70476f3a5",
+     "title": "The Queen Is Dead",
+     "artist": "The Smiths"
+    },
+    {
+     "mbid": "f6b1b900-6108-32f0-abbd-2855af9151eb",
+     "title": "Remain in Light",
+     "artist": "Talking Heads"
+    },
+    {
+     "mbid": "24769a99-8189-3d8c-947e-dbc8574dad5c",
+     "title": "Daydream Nation",
+     "artist": "Sonic Youth"
+    }
+   ]
+  },
+  {
+   "id": "pop",
+   "name": "Pop",
+   "kind": "genre",
+   "basis": "critics",
+   "count": 100,
+   "top": [
+    {
+     "mbid": "416bb5e5-c7d1-3977-8fd7-7c9daf6c2be6",
+     "title": "Rumours",
+     "artist": "Fleetwood Mac"
+    },
+    {
+     "mbid": "90718403-7634-3786-84bf-2053a7bd4f4c",
+     "title": "Sign “☮︎” the Times",
+     "artist": "Prince"
+    },
+    {
+     "mbid": "d8dde278-482c-3cc8-a530-fea70476f3a5",
+     "title": "The Queen Is Dead",
+     "artist": "The Smiths"
+    },
+    {
+     "mbid": "fdd96703-7b21-365e-bdea-38029fbeb84e",
+     "title": "Pet Sounds",
+     "artist": "The Beach Boys"
+    }
+   ]
+  },
+  {
+   "id": "hip-hop",
+   "name": "Hip-Hop",
+   "kind": "genre",
+   "basis": "critics",
+   "count": 100,
+   "top": [
+    {
+     "mbid": "00d2cd53-21c9-3738-b683-56847b7b0040",
+     "title": "Stankonia",
+     "artist": "OutKast"
+    },
+    {
+     "mbid": "d9103c72-3807-4378-9ce7-b6f3e8fdd547",
+     "title": "To Pimp a Butterfly",
+     "artist": "Kendrick Lamar"
+    },
+    {
+     "mbid": "5d6e21e1-deb5-428e-bb42-c2a567f3619b",
+     "title": "My Beautiful Dark Twisted Fantasy",
+     "artist": "Kanye West"
+    },
+    {
+     "mbid": "c1f22e07-7bdf-4a4f-8b50-7747c1091ef6",
+     "title": "Lemonade",
+     "artist": "Beyoncé"
+    }
+   ]
+  },
+  {
+   "id": "rnb",
+   "name": "R&B & Soul",
+   "kind": "genre",
+   "basis": "critics",
+   "count": 100,
+   "top": [
+    {
+     "mbid": "90718403-7634-3786-84bf-2053a7bd4f4c",
+     "title": "Sign “☮︎” the Times",
+     "artist": "Prince"
+    },
+    {
+     "mbid": "ee749c63-5699-38e0-b565-7e84414648d9",
+     "title": "Off the Wall",
+     "artist": "Michael Jackson"
+    },
+    {
+     "mbid": "2c8fd4f3-1523-3604-97dd-18ba222e2f3b",
+     "title": "Otis Blue / Otis Redding Sings Soul",
+     "artist": "Otis Redding"
+    },
+    {
+     "mbid": "5d6e21e1-deb5-428e-bb42-c2a567f3619b",
+     "title": "My Beautiful Dark Twisted Fantasy",
+     "artist": "Kanye West"
+    }
+   ]
+  },
+  {
+   "id": "electronic",
+   "name": "Electronic",
+   "kind": "genre",
+   "basis": "critics",
+   "count": 100,
+   "top": [
+    {
+     "mbid": "f6b1b900-6108-32f0-abbd-2855af9151eb",
+     "title": "Remain in Light",
+     "artist": "Talking Heads"
+    },
+    {
+     "mbid": "00d2cd53-21c9-3738-b683-56847b7b0040",
+     "title": "Stankonia",
+     "artist": "OutKast"
+    },
+    {
+     "mbid": "8b6f133a-2fdf-3cc2-b84d-1c889adc0939",
+     "title": "Blue Lines",
+     "artist": "Massive Attack"
+    },
+    {
+     "mbid": "f6a51281-56c4-3538-b915-65a9d4eb29b5",
+     "title": "Low",
+     "artist": "David Bowie"
+    }
+   ]
+  },
+  {
+   "id": "metal",
+   "name": "Metal",
+   "kind": "genre",
+   "basis": "critics",
+   "count": 100,
+   "top": [
+    {
+     "mbid": "3d00fb45-f8ab-3436-a8e1-b4bfc4d66913",
+     "title": "Master of Puppets",
+     "artist": "Metallica"
+    },
+    {
+     "mbid": "a0b94d0a-210b-4b15-bd1d-93be2196c14a",
+     "title": "Appetite for Destruction",
+     "artist": "Guns N' Roses"
+    },
+    {
+     "mbid": "33b4653d-006e-3cc1-8afb-386b15a6cd6e",
+     "title": "Led Zeppelin II",
+     "artist": "Led Zeppelin"
+    },
+    {
+     "mbid": "dbf1b3c0-1efb-4e5f-9fe1-4c42b144aa24",
+     "title": "Reign in Blood",
+     "artist": "Slayer"
+    }
+   ]
+  },
+  {
+   "id": "punk",
+   "name": "Punk",
+   "kind": "genre",
+   "basis": "critics",
+   "count": 100,
+   "top": [
+    {
+     "mbid": "ca91cb5a-7ecc-3c46-84a0-0d4951889374",
+     "title": "The Clash",
+     "artist": "The Clash"
+    },
+    {
+     "mbid": "8d73e45e-7ca1-3cb4-ae28-6da76196c17c",
+     "title": "London Calling",
+     "artist": "The Clash"
+    },
+    {
+     "mbid": "d8dde278-482c-3cc8-a530-fea70476f3a5",
+     "title": "The Queen Is Dead",
+     "artist": "The Smiths"
+    },
+    {
+     "mbid": "f6b1b900-6108-32f0-abbd-2855af9151eb",
+     "title": "Remain in Light",
+     "artist": "Talking Heads"
+    }
+   ]
+  },
+  {
+   "id": "jazz",
+   "name": "Jazz",
+   "kind": "genre",
+   "basis": "critics",
+   "count": 100,
+   "top": [
+    {
+     "mbid": "8e8a594f-2175-38c7-a871-abb68ec363e7",
+     "title": "Kind of Blue",
+     "artist": "Miles Davis"
+    },
+    {
+     "mbid": "77cf47ba-58cd-3f3d-a5f9-79bf89860421",
+     "title": "A Love Supreme",
+     "artist": "John Coltrane"
+    },
+    {
+     "mbid": "d9103c72-3807-4378-9ce7-b6f3e8fdd547",
+     "title": "To Pimp a Butterfly",
+     "artist": "Kendrick Lamar"
+    },
+    {
+     "mbid": "966fede2-31b2-3b6a-ab50-4a650d3bb97d",
+     "title": "Sketches of Spain",
+     "artist": "Miles Davis"
+    }
+   ]
+  },
+  {
+   "id": "folk",
+   "name": "Folk & Singer-Songwriter",
+   "kind": "genre",
+   "basis": "critics",
+   "count": 100,
+   "top": [
+    {
+     "mbid": "fb48b1dc-412f-36aa-8820-1023c08c46c6",
+     "title": "Highway 61 Revisited",
+     "artist": "Bob Dylan"
+    },
+    {
+     "mbid": "dca03435-8adb-30a5-ba82-5a162267ff38",
+     "title": "Rubber Soul",
+     "artist": "The Beatles"
+    },
+    {
+     "mbid": "19847822-1430-3380-9cf1-bc45545b34ac",
+     "title": "Graceland",
+     "artist": "Paul Simon"
+    },
+    {
+     "mbid": "fa566e7b-254a-4fab-8aa5-ebcb7592d7f2",
+     "title": "COWBOY CARTER",
+     "artist": "Beyoncé"
+    }
+   ]
+  },
+  {
+   "id": "country",
+   "name": "Country & Americana",
+   "kind": "genre",
+   "basis": "critics",
+   "count": 100,
+   "top": [
+    {
+     "mbid": "fa566e7b-254a-4fab-8aa5-ebcb7592d7f2",
+     "title": "COWBOY CARTER",
+     "artist": "Beyoncé"
+    },
+    {
+     "mbid": "67727253-f1c0-4243-9270-f9f1401c3b8c",
+     "title": "Red (Taylor’s Version)",
+     "artist": "Taylor Swift"
+    },
+    {
+     "mbid": "242741bf-182e-45d9-9276-5af8d1b31ad9",
+     "title": "The Land Is Inhospitable and So Are We",
+     "artist": "Mitski"
+    },
+    {
+     "mbid": "836f349a-0434-3e8b-a0bc-261f77a9f99c",
+     "title": "Hotel California",
+     "artist": "Eagles"
+    }
+   ]
+  },
+  {
+   "id": "experimental",
+   "name": "Experimental",
+   "kind": "genre",
+   "basis": "critics",
+   "count": 90,
+   "top": [
+    {
+     "mbid": "5cbd9d7b-597a-3c5e-bfd1-c2b364215560",
+     "title": "The Velvet Underground & Nico",
+     "artist": "The Velvet Underground & Nico"
+    },
+    {
+     "mbid": "24769a99-8189-3d8c-947e-dbc8574dad5c",
+     "title": "Daydream Nation",
+     "artist": "Sonic Youth"
+    },
+    {
+     "mbid": "fb25a883-2270-3ec4-8c62-85c7ed857e6f",
+     "title": "Rain Dogs",
+     "artist": "Tom Waits"
+    },
+    {
+     "mbid": "055be730-dcad-31bf-b550-45ba9c202aa3",
+     "title": "The Beatles",
+     "artist": "The Beatles"
+    }
+   ]
+  },
+  {
+   "id": "ambient",
+   "name": "Ambient",
+   "kind": "genre",
+   "basis": "critics",
+   "count": 49,
+   "top": [
+    {
+     "mbid": "f6a51281-56c4-3538-b915-65a9d4eb29b5",
+     "title": "Low",
+     "artist": "David Bowie"
+    },
+    {
+     "mbid": "fddedc4f-7a2e-3d7d-9ec5-1705c416f3f4",
+     "title": "Untrue",
+     "artist": "Burial"
+    },
+    {
+     "mbid": "11a7c281-a260-4f77-a1d5-1ff2d4c917eb",
+     "title": "Syro",
+     "artist": "Aphex Twin"
+    },
+    {
+     "mbid": "6842c81d-ea77-3dfd-abf7-4323add3f4d4",
+     "title": "Selected Ambient Works 85–92",
+     "artist": "Aphex Twin"
+    }
+   ]
+  },
+  {
+   "id": "latin",
+   "name": "Latin",
+   "kind": "genre",
+   "basis": "critics",
+   "count": 40,
+   "top": [
+    {
+     "mbid": "f455f658-dd55-4790-8cd3-99c7c273018a",
+     "title": "MOTOMAMI",
+     "artist": "ROSALÍA"
+    },
+    {
+     "mbid": "b3073a10-2d7c-484c-b387-e49ae629da3d",
+     "title": "DeBÍ TiRAR MáS FOToS",
+     "artist": "Bad Bunny"
+    },
+    {
+     "mbid": "57561634-f7bb-4e27-aa14-16d0ff79a001",
+     "title": "Isolation",
+     "artist": "Kali Uchis"
+    },
+    {
+     "mbid": "32bbab8e-02c0-30d2-9e23-a19739864b84",
+     "title": "Buena Vista Social Club",
+     "artist": "Buena Vista Social Club"
+    }
+   ]
+  },
+  {
+   "id": "funk",
+   "name": "Funk & Disco",
+   "kind": "genre",
+   "basis": "critics",
+   "count": 81,
+   "top": [
+    {
+     "mbid": "90718403-7634-3786-84bf-2053a7bd4f4c",
+     "title": "Sign “☮︎” the Times",
+     "artist": "Prince"
+    },
+    {
+     "mbid": "ee749c63-5699-38e0-b565-7e84414648d9",
+     "title": "Off the Wall",
+     "artist": "Michael Jackson"
+    },
+    {
+     "mbid": "58c6d809-bfa7-3b25-acf3-a99d53402b08",
+     "title": "Talking Book",
+     "artist": "Stevie Wonder"
+    },
+    {
+     "mbid": "f32fab67-77dd-3937-addc-9062e28e4c37",
+     "title": "Thriller",
+     "artist": "Michael Jackson"
+    }
+   ]
+  },
+  {
+   "id": "blues",
+   "name": "Blues",
+   "kind": "genre",
+   "basis": "critics",
+   "count": 100,
+   "top": [
+    {
+     "mbid": "4838a3c9-fd2b-30a5-83eb-e32545b5d7fc",
+     "title": "Exile on Main St.",
+     "artist": "The Rolling Stones"
+    },
+    {
+     "mbid": "416bb5e5-c7d1-3977-8fd7-7c9daf6c2be6",
+     "title": "Rumours",
+     "artist": "Fleetwood Mac"
+    },
+    {
+     "mbid": "2e61da88-39e9-3473-81d2-c964cb394952",
+     "title": "[Led Zeppelin IV]",
+     "artist": "Led Zeppelin"
+    },
+    {
+     "mbid": "fb48b1dc-412f-36aa-8820-1023c08c46c6",
+     "title": "Highway 61 Revisited",
+     "artist": "Bob Dylan"
+    }
+   ]
+  },
+  {
+   "id": "reggae",
+   "name": "Reggae & Dub",
+   "kind": "genre",
+   "basis": "critics",
+   "count": 30,
+   "top": [
+    {
+     "mbid": "8b6f133a-2fdf-3cc2-b84d-1c889adc0939",
+     "title": "Blue Lines",
+     "artist": "Massive Attack"
+    },
+    {
+     "mbid": "f455f658-dd55-4790-8cd3-99c7c273018a",
+     "title": "MOTOMAMI",
+     "artist": "ROSALÍA"
+    },
+    {
+     "mbid": "b3073a10-2d7c-484c-b387-e49ae629da3d",
+     "title": "DeBÍ TiRAR MáS FOToS",
+     "artist": "Bad Bunny"
+    },
+    {
+     "mbid": "44261ea6-06cf-3fd3-a05c-42dee49c295a",
+     "title": "Kala",
+     "artist": "M.I.A."
+    }
+   ]
+  },
+  {
+   "id": "1960s",
+   "name": "The 60s",
+   "kind": "decade",
+   "basis": "critics",
+   "count": 100,
+   "top": [
+    {
+     "mbid": "5cbd9d7b-597a-3c5e-bfd1-c2b364215560",
+     "title": "The Velvet Underground & Nico",
+     "artist": "The Velvet Underground & Nico"
+    },
+    {
+     "mbid": "fdd96703-7b21-365e-bdea-38029fbeb84e",
+     "title": "Pet Sounds",
+     "artist": "The Beach Boys"
+    },
+    {
+     "mbid": "fb48b1dc-412f-36aa-8820-1023c08c46c6",
+     "title": "Highway 61 Revisited",
+     "artist": "Bob Dylan"
+    },
+    {
+     "mbid": "9f7a4c28-8fa2-3113-929c-c47a9f7982c3",
+     "title": "Sgt. Pepper’s Lonely Hearts Club Band",
+     "artist": "The Beatles"
+    }
+   ]
+  },
+  {
+   "id": "1970s",
+   "name": "The 70s",
+   "kind": "decade",
+   "basis": "critics",
+   "count": 100,
+   "top": [
+    {
+     "mbid": "4838a3c9-fd2b-30a5-83eb-e32545b5d7fc",
+     "title": "Exile on Main St.",
+     "artist": "The Rolling Stones"
+    },
+    {
+     "mbid": "ca91cb5a-7ecc-3c46-84a0-0d4951889374",
+     "title": "The Clash",
+     "artist": "The Clash"
+    },
+    {
+     "mbid": "8d73e45e-7ca1-3cb4-ae28-6da76196c17c",
+     "title": "London Calling",
+     "artist": "The Clash"
+    },
+    {
+     "mbid": "416bb5e5-c7d1-3977-8fd7-7c9daf6c2be6",
+     "title": "Rumours",
+     "artist": "Fleetwood Mac"
+    }
+   ]
+  },
+  {
+   "id": "1980s",
+   "name": "The 80s",
+   "kind": "decade",
+   "basis": "critics",
+   "count": 100,
+   "top": [
+    {
+     "mbid": "90718403-7634-3786-84bf-2053a7bd4f4c",
+     "title": "Sign “☮︎” the Times",
+     "artist": "Prince"
+    },
+    {
+     "mbid": "d8dde278-482c-3cc8-a530-fea70476f3a5",
+     "title": "The Queen Is Dead",
+     "artist": "The Smiths"
+    },
+    {
+     "mbid": "f6b1b900-6108-32f0-abbd-2855af9151eb",
+     "title": "Remain in Light",
+     "artist": "Talking Heads"
+    },
+    {
+     "mbid": "24769a99-8189-3d8c-947e-dbc8574dad5c",
+     "title": "Daydream Nation",
+     "artist": "Sonic Youth"
+    }
+   ]
+  },
+  {
+   "id": "1990s",
+   "name": "The 90s",
+   "kind": "decade",
+   "basis": "critics",
+   "count": 100,
+   "top": [
+    {
+     "mbid": "b1392450-e666-3926-a536-22c65f834433",
+     "title": "OK Computer",
+     "artist": "Radiohead"
+    },
+    {
+     "mbid": "c86c6af9-d10e-3079-b34b-30b682a797eb",
+     "title": "Automatic for the People",
+     "artist": "R.E.M."
+    },
+    {
+     "mbid": "1b022e01-4da6-387b-8658-8678046e4cef",
+     "title": "Nevermind",
+     "artist": "Nirvana"
+    },
+    {
+     "mbid": "a159e102-18bb-42ca-a59e-5f96a7eff241",
+     "title": "Siamese Dream",
+     "artist": "Smashing Pumpkins"
+    }
+   ]
+  },
+  {
+   "id": "2000s",
+   "name": "The 00s",
+   "kind": "decade",
+   "basis": "critics",
+   "count": 100,
+   "top": [
+    {
+     "mbid": "00d2cd53-21c9-3738-b683-56847b7b0040",
+     "title": "Stankonia",
+     "artist": "OutKast"
+    },
+    {
+     "mbid": "efea26d1-a016-30f6-b8e2-bc8c02336b0a",
+     "title": "Is This It",
+     "artist": "The Strokes"
+    },
+    {
+     "mbid": "fddedc4f-7a2e-3d7d-9ec5-1705c416f3f4",
+     "title": "Untrue",
+     "artist": "Burial"
+    },
+    {
+     "mbid": "c563d738-3841-31ce-b29d-ec6b40fd1e7b",
+     "title": "Late Registration",
+     "artist": "Kanye West"
+    }
+   ]
+  },
+  {
+   "id": "2010s",
+   "name": "The 10s",
+   "kind": "decade",
+   "basis": "critics",
+   "count": 100,
+   "top": [
+    {
+     "mbid": "d9103c72-3807-4378-9ce7-b6f3e8fdd547",
+     "title": "To Pimp a Butterfly",
+     "artist": "Kendrick Lamar"
+    },
+    {
+     "mbid": "5d6e21e1-deb5-428e-bb42-c2a567f3619b",
+     "title": "My Beautiful Dark Twisted Fantasy",
+     "artist": "Kanye West"
+    },
+    {
+     "mbid": "c1f22e07-7bdf-4a4f-8b50-7747c1091ef6",
+     "title": "Lemonade",
+     "artist": "Beyoncé"
+    },
+    {
+     "mbid": "b88655ba-7469-48b8-a296-b9011ab73ef3",
+     "title": "DAMN.",
+     "artist": "Kendrick Lamar"
+    }
+   ]
+  },
+  {
+   "id": "2020s",
+   "name": "The 20s",
+   "kind": "decade",
+   "basis": "critics",
+   "count": 100,
+   "top": [
+    {
+     "mbid": "fa566e7b-254a-4fab-8aa5-ebcb7592d7f2",
+     "title": "COWBOY CARTER",
+     "artist": "Beyoncé"
+    },
+    {
+     "mbid": "bb3ec118-57df-4eb9-a8fe-a26a70a7dbe0",
+     "title": "LUX",
+     "artist": "ROSALÍA"
+    },
+    {
+     "mbid": "0f06bec9-22c7-4f7d-8784-5e902096246b",
+     "title": "Glow On",
+     "artist": "Turnstile"
+    },
+    {
+     "mbid": "d622ed70-ccc3-4658-8a0a-b7a2d577c28d",
+     "title": "Ants From Up There",
+     "artist": "Black Country, New Road"
+    }
+   ]
+  }
+ ]
+}

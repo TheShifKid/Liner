@@ -3,12 +3,15 @@
 import Link from "next/link";
 import { useEffect } from "react";
 import { ensureAlbum } from "@/lib/catalog";
+import { formatListeners, withPopularity } from "@/lib/popularity";
 import type { AlbumSnap } from "@/lib/local/db";
 import { sectionDir } from "@/lib/text";
 import { artistHref } from "@/lib/urls";
 import { useAsync } from "@/lib/useAsync";
 import { AlbumRater } from "../AlbumRater";
 import { CoverTint } from "../CoverTint";
+import { CrateButton } from "../CrateButton";
+import { CriticScore } from "../CriticScore";
 import { ListenLinks } from "../ListenLinks";
 import { MyScore } from "../MyScore";
 import { Cover, Empty } from "../ui";
@@ -17,7 +20,15 @@ const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
 
 export function AlbumView({ id }: { id: string }) {
   const valid = UUID.test(id);
-  const { data: album, error } = useAsync(() => (valid ? ensureAlbum(id) : Promise.reject(new Error("bad id"))), id);
+  const { data: album, error } = useAsync(
+    async () => {
+      if (!valid) throw new Error("bad id");
+      const a = await ensureAlbum(id);
+      await withPopularity([a]); // fills a.listeners / a.plays
+      return a;
+    },
+    id,
+  );
 
   // A static site can't set per-album <title>s at build time, so we set it here.
   useEffect(() => {
@@ -91,7 +102,12 @@ export function AlbumView({ id }: { id: string }) {
             {/* Separate elements (not one joined string) so "14 tracks" stays
                 readable inside a right-to-left line. */}
             <ul className="mt-2 flex flex-wrap gap-x-2 text-sm text-text-2">
-              {[`${album.tracks.length} tracks`, totalMs ? `${Math.round(totalMs / 60000)} min` : null, ...genres]
+              {[
+                `${album.tracks.length} tracks`,
+                totalMs ? `${Math.round(totalMs / 60000)} min` : null,
+                album.listeners ? formatListeners(album.listeners) : null,
+                ...genres,
+              ]
                 .filter(Boolean)
                 .map((m, i) => (
                   <li key={m} className="flex gap-2">
@@ -100,8 +116,10 @@ export function AlbumView({ id }: { id: string }) {
                   </li>
                 ))}
             </ul>
-            <div className="mt-5">
+            <CriticScore mbid={album.mbid} />
+            <div className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-3">
               <ListenLinks artist={album.artistCredit} title={album.title} exact={album.streamLinks ?? {}} />
+              <CrateButton snap={snap} />
             </div>
           </div>
         </div>

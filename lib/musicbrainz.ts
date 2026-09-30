@@ -81,7 +81,7 @@ export type MbReleaseGroup = {
   "first-release-date"?: string;
   "artist-credit"?: MbArtistCredit[];
   genres?: { name: string; count: number }[];
-  releases?: MbRelease[];
+  releases?: MbRelease[]; // search results include each release's id + status
 };
 
 export type MbRelease = {
@@ -119,7 +119,7 @@ export type MbArtist = {
 
 // ── Endpoints ─────────────────────────────────────────────────────────────────
 
-export async function searchReleaseGroups(q: string, limit = 25) {
+export async function searchReleaseGroups(q: string, limit = 40) {
   // dismax=true switches MusicBrainz's search to a forgiving "type what you'd
   // type into Google" mode that matches across title AND artist, so
   // "radiohead ok computer" works without Lucene field syntax.

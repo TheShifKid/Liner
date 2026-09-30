@@ -1,17 +1,22 @@
-# Builds the static site and publishes it to GitHub Pages on every push to main.
+# Builds the static site and publishes it to GitHub Pages.
+#   • On every push to main: build with the chart files already in the repo.
+#   • Every Monday: first rebuild the charts from fresh ListenBrainz +
+#     Wikipedia data, commit them, then build and publish.
 name: Deploy to GitHub Pages
 
 on:
   push:
     branches: [main]
+  schedule:
+    - cron: "17 4 * * 1" # Mondays 04:17 UTC (an odd minute avoids the on-the-hour rush)
   workflow_dispatch: # also allows a manual "Run workflow" button
 
 permissions:
-  contents: read
+  contents: write # to commit refreshed charts
   pages: write
   id-token: write
 
-# Never run two deployments at once; a newer push cancels an older one.
+# Never run two deployments at once; a newer run cancels an older one.
 concurrency:
   group: pages
   cancel-in-progress: true
@@ -26,6 +31,18 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
+
+      - name: Refresh charts (weekly / manual runs only)
+        if: github.event_name != 'push'
+        # If ListenBrainz or MusicBrainz is down, keep last week's charts.
+        continue-on-error: true
+        run: |
+          node scripts/build-charts.mjs
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/charts
+          git diff --cached --quiet || (git commit -m "Refresh charts" && git push)
+
       - run: npm run build
         env:
           # The site lives at https://theshifkid.github.io/Liner/, so every

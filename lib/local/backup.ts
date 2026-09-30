@@ -6,7 +6,7 @@ import { local } from "./db";
 // (or switching phones) would lose it. A backup is one JSON file containing
 // every table; importing it on another device restores everything.
 
-const TABLES = ["albums", "albumRatings", "trackRatings", "events", "listens", "tierLists"] as const;
+const TABLES = ["albums", "albumRatings", "trackRatings", "events", "listens", "tierLists", "crate"] as const;
 type Backup = { app: "liner"; version: 1; exportedAt: string } & Record<(typeof TABLES)[number], unknown[]>;
 
 export async function exportBackup(): Promise<Blob> {

@@ -1,13 +1,16 @@
 "use client";
 
 import Link from "next/link";
-import { searchCatalog } from "@/lib/catalog";
+import { useState } from "react";
+import { searchCatalog, type CatAlbum } from "@/lib/catalog";
+import { formatListeners } from "@/lib/popularity";
 import { artistHref } from "@/lib/urls";
 import { useAsync } from "@/lib/useAsync";
 import { AlbumCard, Empty, SectionTitle } from "../ui";
 
 export function SearchView({ q }: { q: string }) {
   const { data: result, error } = useAsync(() => searchCatalog(q), q);
+  const [showAll, setShowAll] = useState(false);
 
   if (!q.trim()) return <Empty>Type an album or artist in the search bar.</Empty>;
   if (error) return <Empty>MusicBrainz didn’t answer. It rate-limits hard; wait a few seconds and search again.</Empty>;
@@ -58,17 +61,36 @@ export function SearchView({ q }: { q: string }) {
         {result.albums.length === 0 ? (
           <Empty>Nothing found. Try the artist name plus the album title.</Empty>
         ) : (
-          <div className="grid grid-cols-2 gap-x-5 gap-y-9 sm:grid-cols-4 lg:grid-cols-6">
-            {result.albums.map((a) => (
-              <AlbumCard
-                key={a.mbid}
-                album={a}
-                sub={<div className="num text-xs text-muted">{[a.year, a.primaryType].filter(Boolean).join(" · ")}</div>}
-              />
-            ))}
+          <AlbumGrid albums={showAll ? [...result.albums, ...result.hidden] : result.albums} />
+        )}
+        {result.hidden.length > 0 && (
+          <div className="mt-8 text-center">
+            <button onClick={() => setShowAll((v) => !v)} className="label rounded-full border border-line-strong px-4 py-2 hover:text-text">
+              {showAll
+                ? "Hide bootlegs & rarely-streamed results"
+                : `Show ${result.hidden.length} more (bootlegs & rarely streamed)`}
+            </button>
           </div>
         )}
       </section>
+    </div>
+  );
+}
+
+function AlbumGrid({ albums }: { albums: CatAlbum[] }) {
+  return (
+    <div className="grid grid-cols-2 gap-x-5 gap-y-9 sm:grid-cols-4 lg:grid-cols-6">
+      {albums.map((a) => (
+        <AlbumCard
+          key={a.mbid}
+          album={a}
+          sub={
+            <div className="num truncate text-xs text-muted">
+              {[a.year, a.primaryType, a.listeners ? formatListeners(a.listeners) : null].filter(Boolean).join(" · ")}
+            </div>
+          }
+        />
+      ))}
     </div>
   );
 }

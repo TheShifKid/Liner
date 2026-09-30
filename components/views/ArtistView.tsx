@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { ensureDiscography, type CatAlbum } from "@/lib/catalog";
+import { isObscure } from "@/lib/popularity";
 import { useAsync } from "@/lib/useAsync";
 import { ArtistRatedSummary } from "../ArtistRatedSummary";
 import { AlbumCard, Empty, SectionTitle } from "../ui";
@@ -20,6 +21,8 @@ export function ArtistView({ id }: { id: string }) {
   const valid = UUID.test(id);
   const { data, error } = useAsync(() => (valid ? ensureDiscography(id) : Promise.reject(new Error("bad id"))), id);
 
+  const [showAll, setShowAll] = useState(false);
+
   useEffect(() => {
     if (data) document.title = `${data.artist.name} · Liner`;
   }, [data]);
@@ -28,7 +31,11 @@ export function ArtistView({ id }: { id: string }) {
   if (error) return <Empty>Couldn’t reach MusicBrainz for this artist. Reload in a moment.</Empty>;
   if (!data) return <div className="label">Fetching the discography from MusicBrainz…</div>;
 
-  const { artist, albums } = data;
+  const { artist, albums: everything } = data;
+  // Hide releases almost nobody streams (unless there's nothing else).
+  const popular = everything.filter((a) => !isObscure(a));
+  const albums = showAll || popular.length === 0 ? everything : popular;
+  const hiddenCount = everything.length - albums.length;
   return (
     <div className="rise space-y-12">
       <header>
@@ -59,6 +66,14 @@ export function ArtistView({ id }: { id: string }) {
           </section>
         );
       })}
+
+      {(hiddenCount > 0 || showAll) && popular.length !== everything.length && (
+        <div className="text-center">
+          <button onClick={() => setShowAll((v) => !v)} className="label rounded-full border border-line-strong px-4 py-2 hover:text-text">
+            {showAll ? "Hide bootlegs & rarely-streamed releases" : `Show ${hiddenCount} more (bootlegs & rarely streamed)`}
+          </button>
+        </div>
+      )}
     </div>
   );
 }
