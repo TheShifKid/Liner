@@ -1,47 +1,42 @@
-import type { Metadata } from "next";
+"use client";
+
 import Link from "next/link";
-import { notFound } from "next/navigation";
-import { AlbumRater } from "@/components/AlbumRater";
-import { CoverTint } from "@/components/CoverTint";
-import { ListenLinks } from "@/components/ListenLinks";
-import { MyScore } from "@/components/MyScore";
-import { Cover } from "@/components/ui";
-import { albumGenres, ensureAlbum } from "@/lib/catalog";
-import { db } from "@/lib/db";
-import { sectionDir } from "@/lib/text";
+import { useEffect } from "react";
+import { ensureAlbum } from "@/lib/catalog";
 import type { AlbumSnap } from "@/lib/local/db";
+import { sectionDir } from "@/lib/text";
+import { artistHref } from "@/lib/urls";
+import { useAsync } from "@/lib/useAsync";
+import { AlbumRater } from "../AlbumRater";
+import { CoverTint } from "../CoverTint";
+import { ListenLinks } from "../ListenLinks";
+import { MyScore } from "../MyScore";
+import { Cover, Empty } from "../ui";
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
 
-export async function generateMetadata(props: PageProps<"/album/[mbid]">): Promise<Metadata> {
-  const { mbid } = await props.params;
-  const a = UUID.test(mbid) ? await db.album.findUnique({ where: { mbid } }) : null;
-  return { title: a ? `${a.title} — ${a.artistCredit}` : "Album" };
-}
+export function AlbumView({ id }: { id: string }) {
+  const valid = UUID.test(id);
+  const { data: album, error } = useAsync(() => (valid ? ensureAlbum(id) : Promise.reject(new Error("bad id"))), id);
 
-export default async function AlbumPage(props: PageProps<"/album/[mbid]">) {
-  const { mbid } = await props.params;
-  if (!UUID.test(mbid)) notFound();
+  // A static site can't set per-album <title>s at build time, so we set it here.
+  useEffect(() => {
+    if (album) document.title = `${album.title} — ${album.artistCredit} · Liner`;
+  }, [album]);
 
-  let album;
-  try {
-    album = await ensureAlbum(mbid);
-  } catch {
-    return (
-      <p className="py-20 text-center text-muted">
-        Couldn’t reach MusicBrainz for this album. It may be busy; try again in a moment.
-      </p>
-    );
-  }
+  if (!valid) return <Empty>That doesn’t look like an album link.</Empty>;
+  if (error)
+    return <Empty>Couldn’t reach MusicBrainz for this album. It may be busy; reload in a moment.</Empty>;
+  if (!album) return <AlbumSkeleton />;
 
-  const genres = albumGenres(album).slice(0, 4);
-  const secondary: string[] = album.secondaryTypes ? JSON.parse(album.secondaryTypes) : [];
+  const genres = album.genres.slice(0, 4);
   const totalMs = album.tracks.reduce((s, t) => s + (t.lengthMs ?? 0), 0);
   const dir = sectionDir([album.title, ...album.tracks.map((t) => t.title)]);
   const heroDir = sectionDir([album.title, album.artistCredit]);
+  const key = (position: number) => `${album.mbid}:${position}`;
 
   // The catalog facts your device keeps alongside your ratings, so stats and
-  // the diary work without asking the server again.
+  // the diary work without looking the album up again.
   const snap: AlbumSnap = {
     mbid: album.mbid,
     title: album.title,
@@ -49,8 +44,8 @@ export default async function AlbumPage(props: PageProps<"/album/[mbid]">) {
     artistMbid: album.artistMbid,
     year: album.year,
     primaryType: album.primaryType,
-    genres: albumGenres(album),
-    tracks: album.tracks.map((t) => ({ key: `${album.mbid}:${t.position}`, title: t.title, position: t.position, lengthMs: t.lengthMs })),
+    genres: album.genres,
+    tracks: album.tracks.map((t) => ({ key: key(t.position), title: t.title, position: t.position, lengthMs: t.lengthMs })),
     savedAt: 0, // stamped when first saved on the device
   };
 
@@ -70,11 +65,11 @@ export default async function AlbumPage(props: PageProps<"/album/[mbid]">) {
         />
         <div className="rise grid items-end gap-6 sm:grid-cols-[minmax(0,260px)_1fr] sm:gap-10">
           <div className="max-w-[260px]">
-            <Cover mbid={album.mbid} title={album.title} size={500} className="cover-shadow" eager />
+            <Cover mbid={album.mbid} title={album.title} artist={album.artistCredit} size={500} className="cover-shadow" eager />
           </div>
           <div dir={heroDir} className="min-w-0">
             <div className="mb-3 flex flex-wrap items-center gap-2 text-xs font-medium text-text-2">
-              {[album.primaryType, ...secondary].filter(Boolean).map((t) => (
+              {[album.primaryType, ...album.secondaryTypes].filter(Boolean).map((t) => (
                 <span key={t} className="rounded-full bg-black/25 px-2.5 py-1">
                   {t}
                 </span>
@@ -86,7 +81,7 @@ export default async function AlbumPage(props: PageProps<"/album/[mbid]">) {
             </h1>
             <div className="mt-3 text-lg font-medium">
               {album.artistMbid ? (
-                <Link href={`/artist/${album.artistMbid}`} className="hover:underline">
+                <Link href={artistHref(album.artistMbid)} className="hover:underline">
                   {album.artistCredit}
                 </Link>
               ) : (
@@ -106,7 +101,7 @@ export default async function AlbumPage(props: PageProps<"/album/[mbid]">) {
                 ))}
             </ul>
             <div className="mt-5">
-              <ListenLinks artist={album.artistCredit} title={album.title} exact={album.streamLinks ? JSON.parse(album.streamLinks) : {}} />
+              <ListenLinks artist={album.artistCredit} title={album.title} exact={album.streamLinks ?? {}} />
             </div>
           </div>
         </div>
@@ -119,7 +114,7 @@ export default async function AlbumPage(props: PageProps<"/album/[mbid]">) {
         snap={snap}
         dir={dir}
         tracks={album.tracks.map((t) => ({
-          key: `${album.mbid}:${t.position}`,
+          key: key(t.position),
           title: t.title,
           position: t.position,
           disc: t.disc,
@@ -128,5 +123,20 @@ export default async function AlbumPage(props: PageProps<"/album/[mbid]">) {
         }))}
       />
     </article>
+  );
+}
+
+// Shown while a never-seen album is fetched: two or three polite,
+// one-per-second calls to MusicBrainz.
+function AlbumSkeleton() {
+  return (
+    <div className="grid gap-10 sm:grid-cols-[260px_1fr]">
+      <div className="aspect-square animate-pulse rounded bg-surface-2" />
+      <div className="flex flex-col justify-end gap-3">
+        <div className="label">Pulling the sleeve from MusicBrainz…</div>
+        <div className="h-14 w-3/4 animate-pulse rounded bg-surface-2" />
+        <div className="h-6 w-1/3 animate-pulse rounded bg-surface-2" />
+      </div>
+    </div>
   );
 }

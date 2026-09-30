@@ -4,6 +4,7 @@ import Link from "next/link";
 import { AlbumCard, Cover, Empty, ScoreBadge, SectionTitle } from "@/components/ui";
 import { useLibrary } from "@/lib/local/hooks";
 import { average, formatScore, scoreColor } from "@/lib/score";
+import { albumHref, searchHref } from "@/lib/urls";
 
 const STARTERS = ["Blonde", "Kid A", "To Pimp a Butterfly", "Love Deluxe", "אריק איינשטיין", "Mashina"];
 
@@ -40,7 +41,7 @@ export function HomeView() {
             {STARTERS.map((s) => (
               <Link
                 key={s}
-                href={`/search?q=${encodeURIComponent(s)}`}
+                href={searchHref(s)}
                 dir="auto"
                 className="rounded-full border border-line-strong px-4 py-2 text-sm font-medium transition hover:bg-surface-2"
               >
@@ -86,10 +87,10 @@ export function HomeView() {
           <ol>
             {top.map((r, i) => (
               <li key={r.albumMbid}>
-                <Link href={`/album/${r.albumMbid}`} className="flex items-center gap-4 rounded-lg px-2 py-2 transition hover:bg-surface">
+                <Link href={albumHref(r.albumMbid)} className="flex items-center gap-4 rounded-lg px-2 py-2 transition hover:bg-surface">
                   <span className="num w-5 text-end text-sm text-muted">{i + 1}</span>
                   <div className="w-12 shrink-0">
-                    <Cover mbid={r.albumMbid} title={snap(r.albumMbid).title} />
+                    <Cover mbid={r.albumMbid} title={snap(r.albumMbid).title} artist={snap(r.albumMbid).artistCredit} />
                   </div>
                   <div className="min-w-0 flex-1">
                     <div dir="auto" className="truncate font-semibold">
@@ -114,9 +115,9 @@ export function HomeView() {
             <ul className="space-y-1">
               {listens.map((l) => (
                 <li key={l.id}>
-                  <Link href={`/album/${l.albumMbid}`} className="flex items-center gap-3 rounded-lg px-2 py-2 transition hover:bg-surface">
+                  <Link href={albumHref(l.albumMbid)} className="flex items-center gap-3 rounded-lg px-2 py-2 transition hover:bg-surface">
                     <div className="w-10 shrink-0">
-                      <Cover mbid={l.albumMbid} title={snap(l.albumMbid).title} />
+                      <Cover mbid={l.albumMbid} title={snap(l.albumMbid).title} artist={snap(l.albumMbid).artistCredit} />
                     </div>
                     <div className="min-w-0 flex-1">
                       <div dir="auto" className="truncate text-sm font-semibold">

@@ -6,6 +6,7 @@ import { useLibrary } from "@/lib/local/hooks";
 import { Cover, Empty, PageTitle, ScoreBadge } from "@/components/ui";
 import { formatScore, scoreColor } from "@/lib/score";
 import { computeStats, criticType } from "@/lib/stats";
+import { albumHref } from "@/lib/urls";
 
 const MONTHS = ["J", "F", "M", "A", "M", "J", "J", "A", "S", "O", "N", "D"];
 
@@ -207,11 +208,11 @@ function Fact({
 }) {
   return (
     <Link
-      href={`/album/${album.mbid}`}
+      href={albumHref(album.mbid)}
       className="flex gap-4 rounded-xl border border-line bg-surface p-4 transition hover:border-line-strong"
     >
       <div className="w-16 shrink-0">
-        <Cover mbid={album.mbid} title={album.title} />
+        <Cover mbid={album.mbid} title={album.title} artist={album.artistCredit} />
       </div>
       <div className="min-w-0 flex-1">
         <div className="label">{kicker}</div>

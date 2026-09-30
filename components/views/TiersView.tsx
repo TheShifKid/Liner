@@ -7,8 +7,10 @@ import { useState } from "react";
 import { createTierList } from "@/lib/local/actions";
 import { local } from "@/lib/local/db";
 import { useLibrary } from "@/lib/local/hooks";
+import { CoverImage } from "../CoverImage";
 import { TierBoard } from "../TierBoard";
 import { btn, Empty } from "../ui";
+import { tierListHref } from "@/lib/urls";
 
 const ORDER = ["S", "A", "B", "C", "D"];
 
@@ -29,7 +31,7 @@ export function TiersView() {
           onSubmit={async (e) => {
             e.preventDefault();
             const id = await createTierList(name);
-            router.push(`/tiers/${id}`);
+            router.push(tierListHref(id));
           }}
         >
           <input
@@ -54,12 +56,16 @@ export function TiersView() {
               .slice(0, 6);
             return (
               <li key={l.id}>
-                <Link href={`/tiers/${l.id}`} className="group block rounded-xl border border-line bg-surface p-3 transition hover:border-line-strong">
+                <Link href={tierListHref(l.id)} className="group block rounded-xl border border-line bg-surface p-3 transition hover:border-line-strong">
                   <div className="grid grid-cols-6 gap-0.5 overflow-hidden rounded-md bg-surface-2">
                     {Array.from({ length: 6 }, (_, i) =>
                       placed[i] ? (
-                        // eslint-disable-next-line @next/next/no-img-element
-                        <img key={i} src={`/api/cover/${placed[i].albumMbid}?size=250`} alt="" className="aspect-square w-full object-cover" />
+                        <CoverImage
+                          key={i}
+                          mbid={placed[i].albumMbid}
+                          title={lib.albums.get(placed[i].albumMbid)?.title ?? ""}
+                          className="aspect-square w-full object-cover"
+                        />
                       ) : (
                         <div key={i} className="aspect-square" />
                       ),

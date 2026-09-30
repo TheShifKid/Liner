@@ -7,9 +7,14 @@ export const metadata: Metadata = { title: "How Liner works" };
 // searchable. File paths point at where to read the real thing.
 const NOTES: { title: string; file: string; body: string }[] = [
   {
+    title: "A static site with no server",
+    file: "next.config.ts",
+    body: "Liner is built into plain HTML, CSS and JavaScript files (a “static export”) and hosted free on GitHub Pages. Everything dynamic happens in your browser: it talks to MusicBrainz directly, which is allowed because MusicBrainz sends CORS headers (the permission a site needs before a browser lets another site's code read its responses).",
+  },
+  {
     title: "Read-through cache",
     file: "lib/catalog.ts",
-    body: "Every album you search or open is copied from MusicBrainz into the local SQLite database. Next time, Liner reads its own copy and makes zero network calls. The library gets faster the more you use it, and MusicBrainz gets fewer requests.",
+    body: "Every album you search or open is copied from MusicBrainz into a cache in your browser (IndexedDB). Next time, Liner reads its own copy and makes zero network calls, so the app gets faster the more you use it and MusicBrainz gets fewer requests.",
   },
   {
     title: "Rate limiting with a serial promise queue",
@@ -34,7 +39,7 @@ const NOTES: { title: string; file: string; body: string }[] = [
   {
     title: "Your data stays on your device (IndexedDB)",
     file: "lib/local/db.ts",
-    body: "Ratings, reviews, history, the diary and tier lists are saved in IndexedDB, a database built into your browser, through the Dexie library. The server only handles the shared music catalog, so it never knows what you think of anything. The flip side: clearing site data erases your library, which is why there's an Export/Import backup on the “Your data” page.",
+    body: "Ratings, reviews, history, the diary and tier lists are saved in IndexedDB, a database built into your browser, through the Dexie library. There is no server, so nobody but you ever sees what you think of anything. The flip side: clearing site data erases your library, which is why there's an Export/Import backup on the “Your data” page.",
   },
   {
     title: "Live queries",
@@ -52,9 +57,9 @@ const NOTES: { title: string; file: string; body: string }[] = [
     body: "Every score change is added to a log that is never edited in place. The chart on each album replays that log to rebuild what you thought on any date, which is the core idea of event sourcing. Edits made within five minutes are merged into one, so fiddling doesn't clutter the history.",
   },
   {
-    title: "Same-origin images for canvas export",
-    file: "app/api/cover/[mbid]/route.ts",
-    body: "Saving a tier list or Wrapped card draws the page onto a <canvas>. Browsers lock (“taint”) a canvas that contains images from other sites. Liner serves every cover from its own address, and caches it on disk, so exports just work.",
+    title: "Cross-origin images on a canvas",
+    file: "components/CoverImage.tsx",
+    body: "Saving a tier list or Wrapped card draws the page onto a <canvas>. Browsers lock (“taint”) a canvas containing images from other sites, unless that site allows it and the page asks politely. The Cover Art Archive allows it, and every cover here is requested with crossOrigin=\"anonymous\", so exports just work.",
   },
   {
     title: "Direction per section, not per line",

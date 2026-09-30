@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { albumHref } from "@/lib/urls";
+import { CoverImage } from "./CoverImage";
 import { MyScore } from "./MyScore";
 import { ScoreBadge } from "./ScoreBadge";
 
@@ -10,27 +12,19 @@ export { ScoreBadge };
 export function Cover({
   mbid,
   title,
+  artist = "",
   size = 250,
   className = "",
   eager = false,
 }: {
   mbid: string;
   title: string;
+  artist?: string;
   size?: 250 | 500;
   className?: string;
   eager?: boolean;
 }) {
-  // A plain <img> rather than next/image: our /api/cover route already
-  // resizes and caches, so there's nothing left for next/image to optimize.
-  return (
-    // eslint-disable-next-line @next/next/no-img-element
-    <img
-      src={`/api/cover/${mbid}?size=${size}`}
-      alt={title}
-      loading={eager ? "eager" : "lazy"}
-      className={`cover w-full ${className}`}
-    />
-  );
+  return <CoverImage mbid={mbid} title={title} artist={artist} size={size} eager={eager} className={`cover w-full ${className}`} />;
 }
 
 export function AlbumCard({
@@ -43,11 +37,12 @@ export function AlbumCard({
   sub?: React.ReactNode;
 }) {
   return (
-    <Link href={`/album/${album.mbid}`} className="group block">
+    <Link href={albumHref(album.mbid)} className="group block">
       <div className="relative">
         <Cover
           mbid={album.mbid}
           title={album.title}
+          artist={album.artistCredit}
           className="transition duration-300 group-hover:-translate-y-1 group-hover:shadow-[0_18px_30px_-18px_rgb(0_0_0/0.8)]"
         />
         {/* Your score lives on your device, so by default a small client

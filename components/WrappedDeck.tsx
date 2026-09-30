@@ -1,10 +1,12 @@
 "use client";
 
 import { toPng } from "html-to-image";
+import { BLANK } from "@/lib/urls";
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { Stats } from "@/lib/stats";
 import { formatScore, scoreColor } from "@/lib/score";
+import { CoverImage } from "./CoverImage";
 import { CoverTint } from "./CoverTint";
 
 // A story-style deck: one card on screen at a time, tap the right side (or →)
@@ -40,7 +42,7 @@ export function WrappedDeck({ year, s, critic }: { year: number; s: Stats; criti
     setSaving(true);
     try {
       // Rendered at 3x so the 360px-wide card becomes a crisp 1080px image.
-      const url = await toPng(frame.current, { pixelRatio: 3 });
+      const url = await toPng(frame.current, { pixelRatio: 3, imagePlaceholder: BLANK });
       const a = document.createElement("a");
       a.href = url;
       a.download = `liner-wrapped-${year}-${i + 1}.png`;
@@ -120,8 +122,7 @@ function Kicker({ children }: { children: React.ReactNode }) {
 }
 
 function CoverImg({ mbid, className = "" }: { mbid: string; className?: string }) {
-  // eslint-disable-next-line @next/next/no-img-element
-  return <img src={`/api/cover/${mbid}?size=500`} alt="" className={`aspect-square w-full rounded-md object-cover shadow-2xl ${className}`} />;
+  return <CoverImage mbid={mbid} title="" size={500} eager className={`aspect-square w-full rounded-md object-cover shadow-2xl ${className}`} />;
 }
 
 function Score({ n }: { n: number }) {

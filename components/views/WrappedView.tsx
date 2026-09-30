@@ -5,6 +5,7 @@ import { useLibrary } from "@/lib/local/hooks";
 import { computeStats, criticType } from "@/lib/stats";
 import { Empty } from "../ui";
 import { WrappedDeck } from "../WrappedDeck";
+import { wrappedHref } from "@/lib/urls";
 
 export function WrappedView({ year }: { year: number }) {
   const lib = useLibrary();
@@ -29,7 +30,7 @@ export function WrappedView({ year }: { year: number }) {
           {years.map((y) => (
             <Link
               key={y}
-              href={`/wrapped/${y}`}
+              href={wrappedHref(y)}
               className={`num rounded-full px-3 py-1.5 text-sm ${y === year ? "bg-surface-2 text-text" : "text-muted hover:text-text"}`}
             >
               {y}

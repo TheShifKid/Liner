@@ -1,14 +1,16 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { coverUrl } from "@/lib/urls";
 
 // Tints the album page with the cover's own color.
 //
 // How: draw the cover onto a tiny 24×24 <canvas>, read the pixels back, and
 // average them, weighting each pixel by how *colorful* it is (saturation), so
-// a black-and-white border doesn't drown out the one red element. This works
-// because covers are served from our own origin; a cross-origin image would
-// "taint" the canvas and getImageData() would throw.
+// a black-and-white border doesn't drown out the one red element. Reading
+// pixels from another site's image is only allowed because the Cover Art
+// Archive sends CORS headers and we request the image with crossOrigin;
+// otherwise the canvas would be "tainted" and getImageData() would throw.
 //
 // The result is written to a CSS variable (--tint) on the wrapper, and the
 // hero's gradient reads that variable, so no React re-render is needed.
@@ -18,7 +20,8 @@ export function CoverTint({ mbid, children, className = "" }: { mbid: string; ch
 
   useEffect(() => {
     const img = new Image();
-    img.src = `/api/cover/${mbid}?size=250`;
+    img.crossOrigin = "anonymous"; // ask for CORS, so we may read the pixels
+    img.src = coverUrl(mbid, 250);
     img.onload = () => {
       try {
         const c = document.createElement("canvas");

@@ -17,10 +17,13 @@ import {
 import { SortableContext, arrayMove, rectSortingStrategy, sortableKeyboardCoordinates, useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { toPng } from "html-to-image";
+import { BLANK } from "@/lib/urls";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { deleteTierList, saveSnapshot, saveTierList } from "@/lib/local/actions";
+import { searchCatalog } from "@/lib/catalog";
 import { scoreColor } from "@/lib/score";
+import { CoverImage } from "./CoverImage";
 import { btn } from "./ui";
 
 // Drag-and-drop tier list, built on dnd-kit.
@@ -145,14 +148,15 @@ export function TierBoard({
 
   // Render the tiers (not the pool) to a PNG. html-to-image clones the DOM
   // into an SVG <foreignObject>, paints that onto a canvas, and reads the
-  // pixels back out. It only works because covers are same-origin (see
-  // app/api/cover), otherwise the canvas would be "tainted" and locked.
+  // pixels back out. It only works because the Cover Art Archive allows
+  // cross-origin use (CORS) and our <img>s ask for it (crossOrigin), otherwise
+  // the canvas would be "tainted" and the browser would refuse to export it.
   const exportImage = async (share: boolean) => {
     if (!exportRef.current) return;
     setExporting(true);
     try {
       const bg = getComputedStyle(document.body).backgroundColor;
-      const dataUrl = await toPng(exportRef.current, { pixelRatio: 2, backgroundColor: bg, cacheBust: false });
+      const dataUrl = await toPng(exportRef.current, { pixelRatio: 2, backgroundColor: bg, imagePlaceholder: BLANK });
       const fileName = `${name.replace(/[^\p{L}\p{N}]+/gu, "-") || "tier-list"}.png`;
       if (share) {
         const blob = await (await fetch(dataUrl)).blob();
@@ -307,11 +311,11 @@ function SortableCover({ album, onRemove }: { album: Album; onRemove: (id: strin
 
 function CoverTile({ album, lifted = false }: { album: Album; lifted?: boolean }) {
   return (
-    // eslint-disable-next-line @next/next/no-img-element
-    <img
-      src={`/api/cover/${album.mbid}?size=250`}
-      alt={`${album.title} — ${album.artistCredit}`}
-      title={`${album.title} — ${album.artistCredit}`}
+    <CoverImage
+      mbid={album.mbid}
+      title={album.title}
+      artist={album.artistCredit}
+      eager // image export can't wait on lazy images that are off-screen
       draggable={false}
       className={`h-[84px] w-[84px] cursor-grab rounded-[3px] touch-none select-none object-cover ${lifted ? "scale-105 cursor-grabbing shadow-xl" : ""}`}
     />
@@ -329,8 +333,8 @@ function AddAlbum({ onAdd }: { onAdd: (a: Album) => void }) {
           e.preventDefault();
           if (!q.trim()) return;
           setBusy(true);
-          const res = await fetch(`/api/search?q=${encodeURIComponent(q)}`).then((r) => r.json()).catch(() => ({ albums: [] }));
-          setResults(res.albums);
+          const res = await searchCatalog(q).catch(() => ({ albums: [] }));
+          setResults(res.albums.slice(0, 12));
           setBusy(false);
         }}
       >
@@ -355,8 +359,7 @@ function AddAlbum({ onAdd }: { onAdd: (a: Album) => void }) {
                 }}
                 className="flex w-full items-center gap-2 p-2 text-left hover:bg-surface-2"
               >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={`/api/cover/${a.mbid}?size=250`} alt="" className="h-9 w-9 object-cover" />
+                <CoverImage mbid={a.mbid} title={a.title} artist={a.artistCredit} className="h-9 w-9 object-cover" />
                 <span className="min-w-0">
                   <span dir="auto" className="block truncate text-sm font-semibold">{a.title}</span>
                   <span dir="auto" className="block truncate text-xs text-text-2">{a.artistCredit}</span>

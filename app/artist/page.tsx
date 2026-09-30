@@ -1,14 +1,14 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import { WrappedRoute } from "@/components/routes";
+import { ArtistRoute } from "@/components/routes";
 
-export const metadata: Metadata = { title: "Wrapped" };
+export const metadata: Metadata = { title: "Artist" };
 
 // useSearchParams() inside needs a Suspense boundary in a static export.
 export default function Page() {
   return (
     <Suspense fallback={null}>
-      <WrappedRoute />
+      <ArtistRoute />
     </Suspense>
   );
 }

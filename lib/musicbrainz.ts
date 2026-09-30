@@ -1,21 +1,27 @@
-import "server-only";
-
 // Thin client for the MusicBrainz web service (https://musicbrainz.org/doc/MusicBrainz_API).
-// Two house rules from their docs, both enforced here:
-//   • A meaningful User-Agent with a way to contact us, or we get throttled.
-//   • About one request per second per IP, or every request gets a 503.
+//
+// It runs in the BROWSER: MusicBrainz sends "CORS" headers
+// (Access-Control-Allow-Origin: *), which is the permission a website needs
+// before a browser lets its JavaScript read another site's responses. That's
+// what lets Liner be a plain static site on GitHub Pages with no server.
+//
+// House rules from their docs:
+//   • About one request per second per IP, or requests start failing (503).
+//     Since each visitor's browser makes its own calls from its own IP, every
+//     visitor gets their own allowance.
+//   • Identify the app. Normally that's a custom User-Agent header, but
+//     browsers don't allow scripts to set it; for browser apps MusicBrainz
+//     goes by the page's Origin instead (theshifkid.github.io).
 
 const BASE = "https://musicbrainz.org/ws/2";
-const USER_AGENT =
-  process.env.MB_USER_AGENT ?? "Liner/0.1 ( https://github.com/TheShifKid/liner )";
 const MIN_GAP_MS = 1100; // 1 req/sec plus a little safety margin
 
 // ── Rate limiter ────────────────────────────────────────────────────────────
 // This is a "serial promise queue". Every request appends itself to the end of
 // one shared promise chain, and each link waits until at least MIN_GAP_MS have
-// passed since the previous request started. So no matter how many pages ask
-// at once, requests leave one by one, spaced out. It lives on globalThis so
-// hot reloads in dev don't create a second, independent queue.
+// passed since the previous request started. So no matter how many
+// components ask at once, requests leave one by one, spaced out. It lives on
+// globalThis so hot reloads in dev don't create a second, independent queue.
 const g = globalThis as unknown as { mbQueue?: Promise<unknown>; mbLast?: number };
 
 function throttled<T>(task: () => Promise<T>): Promise<T> {
@@ -41,9 +47,11 @@ async function mb<T>(path: string, params: Record<string, string> = {}): Promise
   for (let attempt = 0; ; attempt++) {
     const res = await throttled(() =>
       fetch(url, {
-        headers: { "User-Agent": USER_AGENT, Accept: "application/json" },
+        // Only "simple" headers, so the browser can send the request directly
+        // without a CORS preflight (an extra OPTIONS round trip).
+        headers: { Accept: "application/json" },
         signal: AbortSignal.timeout(15_000),
-        cache: "no-store", // we do our own caching in SQLite
+        cache: "no-store", // we do our own caching in IndexedDB
       }),
     );
     if (res.ok) return (await res.json()) as T;

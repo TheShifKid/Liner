@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useLibrary } from "@/lib/local/hooks";
 import { Cover, Empty, ScoreBadge } from "../ui";
+import { albumHref } from "@/lib/urls";
 
 // Days are "YYYY-MM-DD" strings in your own timezone. We build calendar dates
 // at noon (not midnight) so no timezone shift can push them into another day.
@@ -60,13 +61,13 @@ export function DiaryView() {
               const a = album(l.albumMbid);
               return (
                 <li key={l.id}>
-                  <Link href={`/album/${l.albumMbid}`} className="flex items-center gap-4 rounded-lg px-2 py-2.5 transition hover:bg-surface">
+                  <Link href={albumHref(l.albumMbid)} className="flex items-center gap-4 rounded-lg px-2 py-2.5 transition hover:bg-surface">
                     <div className="w-12 shrink-0 text-center">
                       <div className="num text-2xl font-bold leading-none">{Number(l.day.slice(8, 10))}</div>
                       <div className="label">{atNoon(l.day).toLocaleDateString("en-GB", { weekday: "short" })}</div>
                     </div>
                     <div className="w-12 shrink-0">
-                      <Cover mbid={l.albumMbid} title={a.title} />
+                      <Cover mbid={l.albumMbid} title={a.title} artist={a.artistCredit} />
                     </div>
                     <div className="min-w-0 flex-1">
                       <div dir="auto" className="truncate font-semibold">

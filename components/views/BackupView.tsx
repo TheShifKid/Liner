@@ -28,7 +28,7 @@ export function BackupView() {
         <h1 className="font-display text-5xl font-extrabold tracking-tight">Your data</h1>
         <p className="mt-3 leading-relaxed text-text-2">
           Your ratings, reviews, history, diary and tier lists are stored <b className="text-text">only in this browser</b>, on
-          this device. They are never sent to the server. That also means clearing this site’s data, or moving to a new
+          this device. Liner has no server, so they never leave your browser. That also means clearing this site’s data, or moving to a new
           phone, starts you from zero, so export a backup now and then.
         </p>
       </header>
