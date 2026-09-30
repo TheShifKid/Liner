@@ -4,7 +4,7 @@ import { useState, useTransition } from "react";
 import { flagTrack, rateAlbum, rateTrack, saveReview } from "@/app/actions";
 import { average, formatDuration, formatScore, scoreColor } from "@/lib/score";
 import { ScoreScrubber } from "./ScoreScrubber";
-import { PlayButton } from "./Player";
+import { TrackListenLink } from "./ListenLinks";
 
 type Track = {
   id: string;
@@ -87,9 +87,7 @@ export function AlbumRater({
                     style={{ background: scoreColor(st.score) }}
                   />
                   <span className="num w-6 text-right text-xs text-muted">{t.number ?? t.position}</span>
-                  <PlayButton
-                    track={{ trackId: t.id, title: t.title, artist: album.artistCredit, albumMbid: album.mbid }}
-                  />
+                  <TrackListenLink artist={album.artistCredit} title={t.title} />
                   <span dir="auto" className="min-w-0 truncate font-medium">
                     {t.title}
                   </span>

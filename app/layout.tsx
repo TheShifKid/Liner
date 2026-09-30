@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Bricolage_Grotesque, Instrument_Sans, JetBrains_Mono, Rubik } from "next/font/google";
 import Link from "next/link";
 import "./globals.css";
-import { PlayerProvider, MiniPlayer } from "@/components/Player";
 import { SearchBox } from "@/components/SearchBox";
 
 // next/font downloads the fonts at build time and serves them from our own
@@ -33,7 +32,6 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${bricolage.variable} ${instrument.variable} ${jetbrains.variable} ${rubik.variable}`}
     >
       <body className="min-h-dvh">
-        <PlayerProvider>
           <header className="sticky top-0 z-30 border-b border-rule bg-paper/90 backdrop-blur">
             <div className="mx-auto flex max-w-6xl items-center gap-4 px-4 py-3 sm:gap-6">
               <Link href="/" className="font-display text-2xl font-extrabold tracking-tight">
@@ -66,17 +64,11 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
             <a className="underline" href="https://coverartarchive.org">
               Cover Art Archive
             </a>{" "}
-            · previews by{" "}
-            <a className="underline" href="https://www.deezer.com">
-              Deezer
-            </a>{" "}
             ·{" "}
             <Link className="underline" href="/notes">
               how Liner works
             </Link>
           </footer>
-          <MiniPlayer />
-        </PlayerProvider>
       </body>
     </html>
   );

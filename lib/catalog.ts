@@ -114,6 +114,17 @@ const inflight = (g.albumInflight ??= new Map());
 // MusicBrainz only the first time. Returns the album with tracks.
 export async function ensureAlbum(mbid: string) {
   const album = await db.album.findUnique({ where: { mbid } });
+  // Albums cached before streaming links existed get just the links topped up.
+  if (album?.tracksFetchedAt && album.streamLinks === null) {
+    const releases = await MB.browseReleases(mbid).catch(() => null);
+    if (releases) {
+      const canonical = releases.find((r) => r.id === album.releaseMbid);
+      await db.album.update({
+        where: { mbid },
+        data: { streamLinks: JSON.stringify(MB.extractStreamLinks(releases, canonical)) },
+      });
+    }
+  }
   if (!album?.tracksFetchedAt) {
     let job = inflight.get(mbid);
     if (!job) {
@@ -131,7 +142,8 @@ export async function ensureAlbum(mbid: string) {
 async function fetchAlbumFromMusicBrainz(mbid: string) {
   const group = await MB.lookupReleaseGroup(mbid);
   await upsertAlbumFromGroup(group);
-  const release = MB.pickCanonicalRelease(group.releases);
+  const releases = await MB.browseReleases(mbid);
+  const release = MB.pickCanonicalRelease(releases);
   const full = release ? await MB.lookupRelease(release.id) : undefined;
 
   let pos = 0;
@@ -154,7 +166,11 @@ async function fetchAlbumFromMusicBrainz(mbid: string) {
     db.track.createMany({ data: tracks }),
     db.album.update({
       where: { mbid },
-      data: { releaseMbid: release?.id ?? null, tracksFetchedAt: new Date() },
+      data: {
+        releaseMbid: release?.id ?? null,
+        tracksFetchedAt: new Date(),
+        streamLinks: JSON.stringify(MB.extractStreamLinks(releases, release)),
+      },
     }),
   ]);
 

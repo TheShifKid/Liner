@@ -83,9 +83,11 @@ export type MbRelease = {
   date?: string;
   country?: string;
   disambiguation?: string;
+  relations?: { type: string; url?: { resource: string } }[];
   media?: {
     position: number;
     format?: string;
+    "track-count"?: number;
     tracks?: {
       id: string;
       position: number;
@@ -131,9 +133,19 @@ export async function searchArtists(q: string, limit = 5) {
 }
 
 export function lookupReleaseGroup(mbid: string) {
-  return mb<MbReleaseGroup>(`/release-group/${mbid}`, {
-    inc: "artist-credits+genres+releases",
+  return mb<MbReleaseGroup>(`/release-group/${mbid}`, { inc: "artist-credits+genres" });
+}
+
+// Every release (edition) in a group, with track counts and "url
+// relationships": the links MusicBrainz editors attach to a release, which is
+// where Spotify / Apple Music / YouTube Music album links live.
+export async function browseReleases(releaseGroupMbid: string) {
+  const data = await mb<{ releases: MbRelease[] }>("/release", {
+    "release-group": releaseGroupMbid,
+    inc: "url-rels+media",
+    limit: "100",
   });
+  return data.releases ?? [];
 }
 
 export function lookupRelease(mbid: string) {
@@ -165,11 +177,29 @@ export function creditString(credit: MbArtistCredit[] | undefined) {
 // deluxe edition). For the tracklist we want "the original album", so we pick
 // with a simple scoring heuristic: official > not, dated > undated, earlier >
 // later, no "deluxe/remaster" note > has one, worldwide/US/UK > elsewhere.
+const trackCount = (r: MbRelease) => (r.media ?? []).reduce((n, m) => n + (m["track-count"] ?? 0), 0);
+
+// The most common track count among official releases: the "standard" edition
+// length. Deluxe editions with 10 bonus tracks get outvoted by the many
+// ordinary pressings. (Statisticians call the most common value the *mode*.)
+export function modalTrackCount(releases: MbRelease[]) {
+  const tally = new Map<number, number>();
+  for (const r of releases) {
+    if (r.status !== "Official") continue;
+    const n = trackCount(r);
+    if (n) tally.set(n, (tally.get(n) ?? 0) + 1);
+  }
+  return [...tally.entries()].sort((a, b) => b[1] - a[1] || a[0] - b[0])[0]?.[0];
+}
+
 export function pickCanonicalRelease(releases: MbRelease[] = []): MbRelease | undefined {
   const regionRank = (c?: string) => (c === "XW" ? 0 : c === "US" ? 1 : c === "GB" ? 2 : 3);
+  const standard = modalTrackCount(releases);
   return [...releases].sort((a, b) => {
     const off = Number(b.status === "Official") - Number(a.status === "Official");
     if (off) return off;
+    const std = Number(trackCount(b) === standard) - Number(trackCount(a) === standard);
+    if (std) return std;
     const dated = Number(!!b.date) - Number(!!a.date);
     if (dated) return dated;
     // Compare only year-month so a same-month worldwide release can win on region.
@@ -201,4 +231,30 @@ export function sortedGenres(genres?: { name: string; count: number }[]) {
     .filter((x) => x.count > 0)
     .sort((a, b) => b.count - a.count)
     .map((x) => x.name);
+}
+
+// Pick exact streaming links out of all releases' URL relationships.
+// Links on "standard" editions (same track count as the canonical release, no
+// deluxe note) win, so Spotify opens the album you're rating and not the
+// 23-track anniversary box set.
+const SERVICES: [key: string, test: RegExp][] = [
+  ["spotify", /^https:\/\/open\.spotify\.com\/album\//],
+  ["apple", /^https:\/\/(music|itunes)\.apple\.com\/.*album\//],
+  ["youtube", /^https:\/\/music\.youtube\.com\//],
+  ["bandcamp", /^https:\/\/[^/]+\.bandcamp\.com\/album\//],
+  ["tidal", /^https:\/\/(listen\.)?tidal\.com\/(browse\/)?album\//],
+];
+
+export function extractStreamLinks(releases: MbRelease[], canonical?: MbRelease) {
+  const want = canonical ? trackCount(canonical) : modalTrackCount(releases);
+  const rank = (r: MbRelease) => (trackCount(r) === want ? 2 : 0) + (r.disambiguation ? 0 : 1);
+  const links: Record<string, string> = {};
+  for (const r of [...releases].sort((a, b) => rank(b) - rank(a))) {
+    for (const rel of r.relations ?? []) {
+      const url = rel.url?.resource;
+      if (!url) continue;
+      for (const [key, test] of SERVICES) if (!links[key] && test.test(url)) links[key] = url;
+    }
+  }
+  return links;
 }

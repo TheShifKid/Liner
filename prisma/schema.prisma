@@ -72,8 +72,10 @@ model Album {
   // for how it is chosen).
   releaseMbid     String?
   tracksFetchedAt DateTime?
-  deezerAlbumId   String? // matched lazily, used for previews + cover fallback
-  deezerCheckedAt DateTime?
+  // Exact links on streaming services, harvested from MusicBrainz "url
+  // relationships". JSON like {"spotify": "...", "apple": "..."}; "{}" means
+  // we looked and found none (so the UI falls back to a search link).
+  streamLinks     String?
 
   artistMbid String?
   artist     Artist? @relation(fields: [artistMbid], references: [mbid])
@@ -100,7 +102,6 @@ model Track {
   disc          Int     @default(1)
   number        String? // as printed on the sleeve: "A1", "3"...
   lengthMs      Int?
-  deezerTrackId String?
 
   album   Album         @relation(fields: [albumMbid], references: [mbid], onDelete: Cascade)
   ratings TrackRating[]
