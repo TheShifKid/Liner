@@ -9,6 +9,7 @@ export default defineConfig({
     path: "prisma/migrations",
   },
   datasource: {
-    url: process.env["DATABASE_URL"],
+    // Falls back to the default path, so a fresh clone works without a .env file.
+    url: process.env["DATABASE_URL"] ?? "file:./data/liner.db",
   },
 });

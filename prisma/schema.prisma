@@ -1,14 +1,12 @@
-// Liner's database schema.
+// Liner's SERVER database: only the shared music catalog.
 //
-// Two kinds of tables live here:
-//   1. CATALOG tables (Artist, Album, Track): a local cache of MusicBrainz.
-//      Nobody "owns" these rows; they are filled lazily the first time an album
-//      is searched or opened, so the app gets faster the more you use it.
-//   2. USER tables (ratings, history, diary, tier lists): everything personal.
-//      Every one of them has a userId, even though there is only one user today.
-//      That is the whole trick to "easy to add users and friends later": when
-//      login arrives, nothing here changes shape; we just stop hard-coding
-//      which user is current (see lib/user.ts).
+// These tables are a local cache of MusicBrainz (artists, albums, tracks,
+// searches). Nobody "owns" these rows; they fill up lazily the first time an
+// album is searched or opened, so the app gets faster the more it's used.
+//
+// Nothing personal is stored here. Your ratings, reviews, history, diary and
+// tier lists live in your browser (IndexedDB, see lib/local/db.ts), so the
+// server never knows what you think of anything.
 
 generator client {
   provider = "prisma-client"
@@ -17,23 +15,6 @@ generator client {
 
 datasource db {
   provider = "sqlite"
-}
-
-// ───────────────────────────── users ─────────────────────────────
-
-model User {
-  id        String   @id @default(cuid())
-  name      String
-  createdAt DateTime @default(now())
-
-  albumRatings AlbumRating[]
-  trackRatings TrackRating[]
-  history      RatingEvent[]
-  listens      Listen[]
-  tierLists    TierList[]
-
-  // Friends, later: add a `Follow { followerId, followingId }` join table
-  // pointing at User twice. Nothing else in the schema needs to move.
 }
 
 // ──────────────────────────── catalog ────────────────────────────
@@ -58,7 +39,7 @@ model Artist {
 // ("OK Computer") as opposed to one specific pressing (the 1997 UK CD, the
 // 2017 remaster...). People rate release groups, not pressings.
 model Album {
-  mbid             String    @id
+  mbid             String   @id
   title            String
   artistCredit     String // display string, e.g. "Simon & Garfunkel"
   primaryType      String? // Album, EP, Single...
@@ -83,11 +64,7 @@ model Album {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  tracks    Track[]
-  ratings   AlbumRating[]
-  history   RatingEvent[]
-  listens   Listen[]
-  tierSlots TierEntry[]
+  tracks Track[]
 
   @@index([artistMbid])
   @@index([year])
@@ -103,9 +80,7 @@ model Track {
   number        String? // as printed on the sleeve: "A1", "3"...
   lengthMs      Int?
 
-  album   Album         @relation(fields: [albumMbid], references: [mbid], onDelete: Cascade)
-  ratings TrackRating[]
-  history RatingEvent[]
+  album Album @relation(fields: [albumMbid], references: [mbid], onDelete: Cascade)
 
   @@index([albumMbid, position])
 }
@@ -113,101 +88,8 @@ model Track {
 // Remembers which albums a search returned, so repeating a search costs zero
 // MusicBrainz calls. Stale after a week (new releases appear).
 model SearchCache {
-  query      String   @id
+  query       String   @id
   albumMbids  String // JSON array, in result order
-  artistMbids String  @default("[]")
-  fetchedAt  DateTime @default(now())
-}
-
-// ─────────────────────────── personal ────────────────────────────
-
-model AlbumRating {
-  id        String   @id @default(cuid())
-  userId    String
-  albumMbid String
-  score     Float? // 0–10 in 0.5 steps; null = not scored yet
-  review    String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
-  album Album @relation(fields: [albumMbid], references: [mbid], onDelete: Cascade)
-
-  // A "compound unique constraint": one rating per (user, album) pair.
-  // It also gives us upsert() by that pair for free.
-  @@unique([userId, albumMbid])
-}
-
-model TrackRating {
-  id        String   @id @default(cuid())
-  userId    String
-  trackId   String
-  score     Float?
-  flag      String? // "love" | "skip" | null
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
-  track Track @relation(fields: [trackId], references: [id], onDelete: Cascade)
-
-  @@unique([userId, trackId])
-}
-
-// Append-only log of every score change. This pattern is called
-// "event sourcing lite": the *Rating tables hold the current value, and this
-// table keeps every past value, which is what the "how my opinion changed"
-// chart is drawn from. We never UPDATE rows here, only INSERT.
-model RatingEvent {
-  id        String   @id @default(cuid())
-  userId    String
-  albumMbid String
-  trackId   String? // null = the event is about the album score itself
-  score     Float? // null = the score was cleared
-  createdAt DateTime @default(now())
-
-  user  User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  album Album  @relation(fields: [albumMbid], references: [mbid], onDelete: Cascade)
-  track Track? @relation(fields: [trackId], references: [id], onDelete: Cascade)
-
-  @@index([userId, albumMbid, createdAt])
-}
-
-// The listening diary (Letterboxd-style): one row per listen.
-model Listen {
-  id         String   @id @default(cuid())
-  userId     String
-  albumMbid  String
-  listenedOn DateTime // the day you listened (not when you logged it)
-  relisten   Boolean  @default(false)
-  note       String?
-  createdAt  DateTime @default(now())
-
-  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
-  album Album @relation(fields: [albumMbid], references: [mbid], onDelete: Cascade)
-
-  @@index([userId, listenedOn])
-}
-
-model TierList {
-  id        String   @id @default(cuid())
-  userId    String
-  name      String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  user    User        @relation(fields: [userId], references: [id], onDelete: Cascade)
-  entries TierEntry[]
-}
-
-model TierEntry {
-  id         String @id @default(cuid())
-  tierListId String
-  albumMbid  String
-  tier       String // "S" | "A" | "B" | "C" | "D" | "pool" (not placed yet)
-  position   Int // order inside the tier
-
-  tierList TierList @relation(fields: [tierListId], references: [id], onDelete: Cascade)
-  album    Album    @relation(fields: [albumMbid], references: [mbid], onDelete: Cascade)
-
-  @@unique([tierListId, albumMbid])
+  artistMbids String   @default("[]")
+  fetchedAt   DateTime @default(now())
 }

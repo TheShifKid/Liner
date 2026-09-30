@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { deleteListen, logListen } from "@/app/actions";
+import type { AlbumSnap, Listen } from "@/lib/local/db";
+import { deleteListen, logListen } from "@/lib/local/actions";
 import { btn } from "./ui";
 
 // Today's date as YYYY-MM-DD in the *browser's* timezone. toISOString() would
@@ -11,13 +12,8 @@ function localToday() {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 }
 
-export function ListenLogger({
-  albumMbid,
-  listens,
-}: {
-  albumMbid: string;
-  listens: { id: string; day: string; relisten: boolean; note: string | null }[];
-}) {
+export function ListenLogger({ snap, listens: raw }: { snap: AlbumSnap; listens: Listen[] }) {
+  const listens = [...raw].sort((a, b) => b.day.localeCompare(a.day) || b.createdAt - a.createdAt);
   const [day, setDay] = useState(localToday);
   const [note, setNote] = useState("");
   const [pending, start] = useTransition();
@@ -29,7 +25,7 @@ export function ListenLogger({
         onSubmit={(e) => {
           e.preventDefault();
           start(async () => {
-            await logListen(albumMbid, day, note);
+            await logListen(snap, day, note);
             setNote("");
           });
         }}

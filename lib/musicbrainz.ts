@@ -7,7 +7,7 @@ import "server-only";
 
 const BASE = "https://musicbrainz.org/ws/2";
 const USER_AGENT =
-  process.env.MB_USER_AGENT ?? "Liner/0.1 ( personal album-rating app; https://github.com/TheShifKid )";
+  process.env.MB_USER_AGENT ?? "Liner/0.1 ( https://github.com/TheShifKid/liner )";
 const MIN_GAP_MS = 1100; // 1 req/sec plus a little safety margin
 
 // ── Rate limiter ────────────────────────────────────────────────────────────

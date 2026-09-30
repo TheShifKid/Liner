@@ -1,41 +1,11 @@
 import Link from "next/link";
-import { formatScore, scoreColor } from "@/lib/score";
+import { MyScore } from "./MyScore";
+import { ScoreBadge } from "./ScoreBadge";
+
+export { ScoreBadge };
 
 // Small presentational pieces shared by many pages. No state and no hooks, so
 // they work in both server and client components.
-
-const BADGE = {
-  xs: "h-5 min-w-6 text-[11px] rounded",
-  sm: "h-7 min-w-8 text-xs rounded-md",
-  md: "h-9 min-w-11 text-base rounded-md",
-  lg: "h-14 min-w-16 text-2xl rounded-lg",
-  xl: "h-20 min-w-24 text-4xl rounded-xl",
-};
-
-// The score tile: the score's own color as background, near-black digits
-// (every color on the scale is light enough for dark text to read).
-export function ScoreBadge({
-  score,
-  size = "md",
-  title,
-}: {
-  score: number | null | undefined;
-  size?: keyof typeof BADGE;
-  title?: string;
-}) {
-  const none = score === null || score === undefined;
-  return (
-    <span
-      title={title}
-      className={`num inline-flex items-center justify-center px-1.5 font-bold ${BADGE[size]} ${
-        none ? "border border-dashed border-line-strong text-muted" : "text-[#10130d]"
-      }`}
-      style={none ? undefined : { background: scoreColor(score) }}
-    >
-      {formatScore(score)}
-    </span>
-  );
-}
 
 export function Cover({
   mbid,
@@ -80,11 +50,11 @@ export function AlbumCard({
           title={album.title}
           className="transition duration-300 group-hover:-translate-y-1 group-hover:shadow-[0_18px_30px_-18px_rgb(0_0_0/0.8)]"
         />
-        {score !== undefined && score !== null && (
-          <span className="absolute -bottom-2 end-2 shadow-lg">
-            <ScoreBadge score={score} size="sm" />
-          </span>
-        )}
+        {/* Your score lives on your device, so by default a small client
+            component looks it up; pages that already know it pass `score`. */}
+        <span className="absolute -bottom-2 end-2 shadow-lg">
+          {score === undefined ? <MyScore mbid={album.mbid} size="sm" /> : score !== null && <ScoreBadge score={score} size="sm" />}
+        </span>
       </div>
       <div dir="auto" className="mt-3 truncate text-[15px] font-semibold leading-tight">
         {album.title}

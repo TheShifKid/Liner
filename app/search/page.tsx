@@ -2,8 +2,6 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { AlbumCard, Empty, SectionTitle } from "@/components/ui";
 import { searchCatalog } from "@/lib/catalog";
-import { db } from "@/lib/db";
-import { currentUser } from "@/lib/user";
 
 export const metadata: Metadata = { title: "Search" };
 
@@ -19,11 +17,6 @@ export default async function SearchPage(props: PageProps<"/search">) {
     return <Empty>MusicBrainz didn’t answer. It rate-limits hard; wait a few seconds and search again.</Empty>;
   }
 
-  const user = await currentUser();
-  const ratings = await db.albumRating.findMany({
-    where: { userId: user.id, albumMbid: { in: result.albums.map((a) => a.mbid) } },
-  });
-  const scoreOf = new Map(ratings.map((r) => [r.albumMbid, r.score]));
 
   return (
     <div className="rise space-y-12">
@@ -65,7 +58,6 @@ export default async function SearchPage(props: PageProps<"/search">) {
               <AlbumCard
                 key={a.mbid}
                 album={a}
-                score={scoreOf.get(a.mbid)}
                 sub={
                   <div className="num text-xs text-muted">
                     {[a.year, a.primaryType].filter(Boolean).join(" · ")}

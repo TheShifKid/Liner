@@ -3,8 +3,7 @@ import { notFound } from "next/navigation";
 import { AlbumCard, Empty, SectionTitle } from "@/components/ui";
 import { ensureDiscography } from "@/lib/catalog";
 import { db } from "@/lib/db";
-import { average, formatScore } from "@/lib/score";
-import { currentUser } from "@/lib/user";
+import { ArtistRatedSummary } from "@/components/ArtistRatedSummary";
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
 
@@ -25,11 +24,6 @@ export default async function ArtistPage(props: PageProps<"/artist/[mbid]">) {
     return <Empty>Couldn’t reach MusicBrainz for this artist. Try again in a moment.</Empty>;
   }
 
-  const user = await currentUser();
-  const ratings = await db.albumRating.findMany({
-    where: { userId: user.id, album: { artistMbid: mbid } },
-  });
-  const scoreOf = new Map(ratings.map((r) => [r.albumMbid, r.score]));
   const genres: string[] = artist.genres ? JSON.parse(artist.genres) : [];
 
   // Group the discography into studio albums, EPs, and "other" (live,
@@ -40,7 +34,6 @@ export default async function ArtistPage(props: PageProps<"/artist/[mbid]">) {
     { name: "Live, compilations & more", pick: (_t: string | null, s: string | null) => !!s },
   ];
 
-  const avg = average(ratings.map((r) => r.score));
 
   return (
     <div className="rise space-y-12">
@@ -54,11 +47,7 @@ export default async function ArtistPage(props: PageProps<"/artist/[mbid]">) {
         </h1>
         <p className="mt-3 text-sm text-text-2">
           {genres.slice(0, 4).join(" · ")}
-          {ratings.length > 0 && (
-            <span className="num ml-2 text-muted">
-              · you’ve rated {ratings.length} · avg {formatScore(avg)}
-            </span>
-          )}
+          <ArtistRatedSummary mbids={artist.albums.map((a) => a.mbid)} />
         </p>
       </header>
 
@@ -70,7 +59,7 @@ export default async function ArtistPage(props: PageProps<"/artist/[mbid]">) {
             <SectionTitle>{k.name}</SectionTitle>
             <div className="grid grid-cols-2 gap-x-5 gap-y-9 sm:grid-cols-4 lg:grid-cols-6">
               {albums.map((a) => (
-                <AlbumCard key={a.mbid} album={a} score={scoreOf.get(a.mbid)} />
+                <AlbumCard key={a.mbid} album={a} />
               ))}
             </div>
           </section>

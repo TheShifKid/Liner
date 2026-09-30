@@ -22,7 +22,6 @@
   --muted: #837a6d;
   --unrated: #2f2b26;
   --accent: #ff5b35; /* Liner's own color: logo, focus, active nav */
-  --love: #ff4f6d;
   --tint: #3a332b; /* replaced per album by the cover's dominant color */
 }
 
@@ -51,7 +50,6 @@
   --color-text-2: var(--text-2);
   --color-muted: var(--muted);
   --color-accent: var(--accent);
-  --color-love: var(--love);
   --font-display: var(--font-bricolage), var(--font-rubik), system-ui, sans-serif;
   --font-sans: var(--font-instrument), var(--font-rubik), system-ui, sans-serif;
   --font-mono: var(--font-jetbrains), ui-monospace, monospace;

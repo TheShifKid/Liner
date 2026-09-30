@@ -43,5 +43,6 @@ next-env.d.ts
 
 
 # local database + cached cover art
-/data/
+/data/*
+!/data/.gitkeep
 /generated/

@@ -3,18 +3,13 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { AlbumRater } from "@/components/AlbumRater";
 import { CoverTint } from "@/components/CoverTint";
-import { HistoryChart } from "@/components/HistoryChart";
 import { ListenLinks } from "@/components/ListenLinks";
-import { ListenLogger } from "@/components/ListenLogger";
-import { Cover, ScoreBadge } from "@/components/ui";
+import { MyScore } from "@/components/MyScore";
+import { Cover } from "@/components/ui";
 import { albumGenres, ensureAlbum } from "@/lib/catalog";
 import { db } from "@/lib/db";
-import { formatScore } from "@/lib/score";
 import { sectionDir } from "@/lib/text";
-import { currentUser } from "@/lib/user";
-
-// Read once per request (see the note in HistoryChart).
-const requestTime = () => Date.now();
+import type { AlbumSnap } from "@/lib/local/db";
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
 
@@ -39,35 +34,25 @@ export default async function AlbumPage(props: PageProps<"/album/[mbid]">) {
     );
   }
 
-  const user = await currentUser();
-  const [rating, trackRatings, events, listens] = await Promise.all([
-    db.albumRating.findUnique({ where: { userId_albumMbid: { userId: user.id, albumMbid: mbid } } }),
-    db.trackRating.findMany({ where: { userId: user.id, track: { albumMbid: mbid } } }),
-    db.ratingEvent.findMany({ where: { userId: user.id, albumMbid: mbid }, orderBy: { createdAt: "asc" } }),
-    db.listen.findMany({ where: { userId: user.id, albumMbid: mbid }, orderBy: { listenedOn: "desc" } }),
-  ]);
-
-  // Turn the event log into readable "was → now" lines. For each event we
-  // need the value *before* it, so walk forward remembering the last value
-  // per target (the album, or one track).
-  const titleOf = new Map(album.tracks.map((t) => [t.id, t.title]));
-  const lastValue = new Map<string, number | null>();
-  const changes = events
-    .map((e) => {
-      const key = e.trackId ?? "album";
-      const from = lastValue.has(key) ? lastValue.get(key)! : undefined;
-      lastValue.set(key, e.score);
-      return { id: e.id, what: e.trackId ? (titleOf.get(e.trackId) ?? "a track") : "Album score", from, to: e.score, at: e.createdAt };
-    })
-    .filter((c) => c.from !== undefined) // first-ever ratings aren't "changes"
-    .reverse()
-    .slice(0, 6);
-
   const genres = albumGenres(album).slice(0, 4);
   const secondary: string[] = album.secondaryTypes ? JSON.parse(album.secondaryTypes) : [];
   const totalMs = album.tracks.reduce((s, t) => s + (t.lengthMs ?? 0), 0);
   const dir = sectionDir([album.title, ...album.tracks.map((t) => t.title)]);
   const heroDir = sectionDir([album.title, album.artistCredit]);
+
+  // The catalog facts your device keeps alongside your ratings, so stats and
+  // the diary work without asking the server again.
+  const snap: AlbumSnap = {
+    mbid: album.mbid,
+    title: album.title,
+    artistCredit: album.artistCredit,
+    artistMbid: album.artistMbid,
+    year: album.year,
+    primaryType: album.primaryType,
+    genres: albumGenres(album),
+    tracks: album.tracks.map((t) => ({ key: `${album.mbid}:${t.position}`, title: t.title, position: t.position, lengthMs: t.lengthMs })),
+    savedAt: 0, // stamped when first saved on the device
+  };
 
   return (
     <article>
@@ -125,75 +110,23 @@ export default async function AlbumPage(props: PageProps<"/album/[mbid]">) {
             </div>
           </div>
         </div>
-        {rating?.score != null && (
-          <div className="absolute end-0 top-10 hidden text-center lg:block">
-            <ScoreBadge score={rating.score} size="xl" />
-            <div className="label mt-2">your score</div>
-          </div>
-        )}
+        <div className="absolute end-0 top-10 hidden text-center lg:block">
+          <MyScore mbid={album.mbid} size="xl" caption="your score" />
+        </div>
       </CoverTint>
 
       <AlbumRater
-        album={{ mbid: album.mbid, title: album.title }}
+        snap={snap}
         dir={dir}
         tracks={album.tracks.map((t) => ({
-          id: t.id,
+          key: `${album.mbid}:${t.position}`,
           title: t.title,
           position: t.position,
           disc: t.disc,
           number: t.number,
           lengthMs: t.lengthMs,
         }))}
-        initialTracks={Object.fromEntries(trackRatings.map((r) => [r.trackId, { score: r.score, flag: r.flag }]))}
-        initialAlbumScore={rating?.score ?? null}
-        initialReview={rating?.review ?? ""}
-      >
-        <div className="rounded-xl border border-line bg-surface p-5">
-          <div className="label mb-3">Diary</div>
-          <ListenLogger
-            albumMbid={album.mbid}
-            listens={listens.map((l) => ({
-              id: l.id,
-              day: l.listenedOn.toISOString().slice(0, 10),
-              relisten: l.relisten,
-              note: l.note,
-            }))}
-          />
-        </div>
-
-        {events.length > 0 && (
-          <div className="rounded-xl border border-line bg-surface p-5">
-            <div className="label mb-3">Opinion over time</div>
-            <HistoryChart events={events} now={requestTime()} />
-            {changes.length > 0 && (
-              <ul className="mt-4 space-y-1.5 border-t border-line pt-3 text-sm">
-                {changes.map((c) => (
-                  <li key={c.id} className="flex items-baseline gap-2">
-                    <span className="num w-14 shrink-0 text-xs text-muted">
-                      {c.at.toLocaleDateString("en-GB", { day: "numeric", month: "short" })}
-                    </span>
-                    <span dir="auto" className="min-w-0 flex-1 truncate text-text-2">
-                      {c.what}
-                    </span>
-                    <span className="num text-xs text-muted">
-                      {formatScore(c.from)} → <b className="text-text">{formatScore(c.to)}</b>
-                    </span>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
-        )}
-
-        <a
-          className="label block text-center hover:text-text"
-          href={`https://musicbrainz.org/release-group/${album.mbid}`}
-          target="_blank"
-          rel="noreferrer"
-        >
-          View on MusicBrainz ↗
-        </a>
-      </AlbumRater>
+      />
     </article>
   );
 }

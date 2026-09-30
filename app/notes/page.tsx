@@ -32,13 +32,23 @@ const NOTES: { title: string; file: string; body: string }[] = [
     body: "Score colors are blended in OKLCH, a color space where equal numeric steps look like equal visual steps. Color stops are placed at the AOTY buckets (under 50 red, 50–69 yellow, 70+ green), so the categories stay obvious while a 71 and a 95 still look different.",
   },
   {
-    title: "Optimistic updates",
-    file: "components/AlbumRater.tsx",
-    body: "When you set a score, the screen updates immediately and the save happens in the background through a Server Action (a server function you call like a normal function). Waiting for the round trip would make every click feel sticky.",
+    title: "Your data stays on your device (IndexedDB)",
+    file: "lib/local/db.ts",
+    body: "Ratings, reviews, history, the diary and tier lists are saved in IndexedDB, a database built into your browser, through the Dexie library. The server only handles the shared music catalog, so it never knows what you think of anything. The flip side: clearing site data erases your library, which is why there's an Export/Import backup on the “Your data” page.",
+  },
+  {
+    title: "Live queries",
+    file: "lib/local/hooks.ts",
+    body: "Pages read your data with useLiveQuery, which re-runs a query whenever the tables it read change. Rate a song and the heatmap, averages, stats and even other open tabs update on their own, with no refresh logic anywhere.",
+  },
+  {
+    title: "Stable keys instead of database ids",
+    file: "lib/local/db.ts",
+    body: "A song rating is stored under “album id : track position”, not the server's internal row id. If the server's cache is ever wiped and rebuilt, the ids change but your ratings still line up with the right songs.",
   },
   {
     title: "Append-only history with coalescing",
-    file: "app/actions.ts",
+    file: "lib/local/actions.ts",
     body: "Every score change is added to a log that is never edited in place. The chart on each album replays that log to rebuild what you thought on any date, which is the core idea of event sourcing. Edits made within five minutes are merged into one, so fiddling doesn't clutter the history.",
   },
   {

@@ -9,20 +9,20 @@ import { formatScore } from "@/lib/score";
 // (Replaying a log to rebuild past state is the core idea behind event
 // sourcing, used from bank ledgers to git.)
 
-type Ev = { trackId: string | null; score: number | null; createdAt: Date };
+type Ev = { trackKey: string | null; score: number | null; createdAt: number };
 type Point = { t: number; album: number | null; tracks: number | null };
 
 export function replay(events: Ev[]): Point[] {
   const trackScores = new Map<string, number>();
   let album: number | null = null;
   const out: Point[] = [];
-  for (const e of [...events].sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime())) {
-    if (e.trackId === null) album = e.score;
-    else if (e.score === null) trackScores.delete(e.trackId);
-    else trackScores.set(e.trackId, e.score);
+  for (const e of [...events].sort((a, b) => a.createdAt - b.createdAt)) {
+    if (e.trackKey === null) album = e.score;
+    else if (e.score === null) trackScores.delete(e.trackKey);
+    else trackScores.set(e.trackKey, e.score);
     const vals = [...trackScores.values()];
     const avg = vals.length ? vals.reduce((a, b) => a + b, 0) / vals.length : null;
-    out.push({ t: e.createdAt.getTime(), album, tracks: avg });
+    out.push({ t: e.createdAt, album, tracks: avg });
   }
   return out;
 }
@@ -31,10 +31,9 @@ const W = 640;
 const H = 220;
 const PAD = { l: 28, r: 12, t: 12, b: 26 };
 
-// React's lint rules flag Date.now() inside a component because a client
-// component could re-render and draw a different chart each time ("impure").
-// This is a server component rendered once per request, so reading the clock
-// is fine; the page passes the time in explicitly to keep that visible.
+// `now` is passed in rather than read here: React's lint rules flag
+// Date.now() during render as "impure" (each re-render would draw a slightly
+// different chart). The caller reads the clock once and keeps it.
 export function HistoryChart({ events, now }: { events: Ev[]; now: number }) {
   const pts = replay(events);
   if (pts.length === 0) return null;

@@ -162,7 +162,7 @@ async function fetchAlbumFromMusicBrainz(mbid: string) {
   // A "transaction": either all of these writes happen or none do, so a
   // crash halfway can't leave an album with half a tracklist.
   await db.$transaction([
-    db.track.deleteMany({ where: { albumMbid: mbid, ratings: { none: {} } } }),
+    db.track.deleteMany({ where: { albumMbid: mbid } }),
     db.track.createMany({ data: tracks }),
     db.album.update({
       where: { mbid },

@@ -17,8 +17,9 @@ import {
 import { SortableContext, arrayMove, rectSortingStrategy, sortableKeyboardCoordinates, useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { toPng } from "html-to-image";
+import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { deleteTierList, saveTierList } from "@/app/actions";
+import { deleteTierList, saveSnapshot, saveTierList } from "@/lib/local/actions";
 import { scoreColor } from "@/lib/score";
 import { btn } from "./ui";
 
@@ -58,6 +59,7 @@ export function TierBoard({
   const [exporting, setExporting] = useState(false);
   const exportRef = useRef<HTMLDivElement>(null);
   const firstRender = useRef(true);
+  const router = useRouter();
 
   // Sensors decide what counts as "starting a drag". The small distance/delay
   // stops an ordinary click or a scroll on a phone from grabbing a cover.
@@ -120,8 +122,20 @@ export function TierBoard({
     if (newI >= 0 && oldI !== newI) setBoard((b) => ({ ...b, [c]: arrayMove(b[c], oldI, newI) }));
   };
 
-  const addAlbum = (a: Album) => {
+  const addAlbum = (a: Album & { year?: number | null }) => {
     if (containerOf(a.mbid)) return;
+    // Remember the album's name on this device so the list can show it later.
+    void saveSnapshot({
+      mbid: a.mbid,
+      title: a.title,
+      artistCredit: a.artistCredit,
+      artistMbid: null,
+      year: a.year ?? null,
+      primaryType: null,
+      genres: [],
+      tracks: [],
+      savedAt: 0,
+    });
     setAlbums((m) => new Map(m).set(a.mbid, a));
     setBoard((b) => ({ ...b, pool: [a.mbid, ...b.pool] }));
   };
@@ -212,7 +226,11 @@ export function TierBoard({
       </DndContext>
 
       <button
-        onClick={() => confirm("Delete this tier list?") && deleteTierList(id)}
+        onClick={async () => {
+          if (!confirm("Delete this tier list?")) return;
+          await deleteTierList(id);
+          router.push("/tiers");
+        }}
         className="text-xs text-muted underline hover:text-accent"
       >
         Delete tier list

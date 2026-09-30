@@ -51,9 +51,14 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
                 Cover Art Archive
               </a>
             </span>
-            <Link className="underline hover:text-text" href="/notes">
-              How Liner works
-            </Link>
+            <span className="flex gap-4">
+              <Link className="underline hover:text-text" href="/data">
+                Your data &amp; backup
+              </Link>
+              <Link className="underline hover:text-text" href="/notes">
+                How Liner works
+              </Link>
+            </span>
           </div>
         </footer>
       </body>
