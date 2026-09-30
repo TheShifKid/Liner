@@ -1,36 +1,41 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Liner
 
-## Getting Started
+A personal album-rating app, in the spirit of Album of the Year but more personal:
+score every song 0–100, score the album on its own terms, and see whether the
+whole beats the sum of its parts.
 
-First, run the development server:
+- **Catalogue:** MusicBrainz (millions of albums), cached locally in SQLite as you browse
+- **Covers:** Cover Art Archive, with a Deezer fallback, cached on disk
+- **Listen on:** exact Spotify / Apple Music / YouTube Music / Bandcamp / Tidal links
+  from MusicBrainz, or a search link when none is known
+- **Features:** heatmap per album · score history chart · listening diary ·
+  drag-and-drop tier lists (save/share as PNG) · stats dashboard · yearly Wrapped
+
+## Run it
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install          # also generates the Prisma client
+npx prisma migrate deploy   # creates data/liner.db
+npm run dev          # http://localhost:3100
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Optional `.env` settings:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```
+DATABASE_URL="file:./data/liner.db"
+MB_USER_AGENT="Liner/0.1 ( your-contact-url-or-email )"
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Where things live
 
-## Learn More
+| Path | What |
+| --- | --- |
+| `prisma/schema.prisma` | Database schema (catalog cache + per-user data) |
+| `lib/musicbrainz.ts` | Rate-limited MusicBrainz client, release picking, search ranking |
+| `lib/catalog.ts` | Read-through cache on top of MusicBrainz |
+| `lib/stats.ts` | Everything behind /stats and /wrapped |
+| `app/actions.ts` | All writes (Server Actions), including the rating-history log |
+| `app/notes` | In-app "How Liner works" page explaining the techniques |
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Multi-user ready: every personal table has a `userId`; `lib/user.ts` is the one
+place that decides who the current user is.

@@ -28,7 +28,7 @@ export function replay(events: Ev[]): Point[] {
 }
 
 const W = 640;
-const H = 260;
+const H = 220;
 const PAD = { l: 28, r: 12, t: 12, b: 26 };
 
 // React's lint rules flag Date.now() inside a component because a client
@@ -68,7 +68,7 @@ export function HistoryChart({ events, now }: { events: Ev[]; now: number }) {
 
   return (
     <figure>
-      <svg viewBox={`0 0 ${W} ${H}`} className="w-full" role="img" aria-label="Score history chart">
+      <svg viewBox={`0 0 ${W} ${H}`} className="max-h-64 w-full" role="img" aria-label="Score history chart">
         {[0, 50, 70, 100].map((s) => (
           <g key={s}>
             <line x1={PAD.l} x2={W - PAD.r} y1={y(s)} y2={y(s)} stroke="var(--line)" strokeDasharray={s % 100 ? "3 4" : undefined} />
