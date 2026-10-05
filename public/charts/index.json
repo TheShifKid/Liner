@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-09-30T20:10:15.281Z",
+ "generatedAt": "2026-10-05T11:39:17.717Z",
  "charts": [
   {
    "id": "greatest",
@@ -35,7 +35,7 @@
    "name": "Best of 2026",
    "kind": "year",
    "basis": "critics",
-   "count": 65,
+   "count": 63,
    "top": [
     {
      "mbid": "4c4eee61-da1e-4115-8eb9-07e5b671fefe",
@@ -64,7 +64,7 @@
    "name": "Best of 2025",
    "kind": "year",
    "basis": "critics",
-   "count": 90,
+   "count": 89,
    "top": [
     {
      "mbid": "bb3ec118-57df-4eb9-a8fe-a26a70a7dbe0",
@@ -93,7 +93,7 @@
    "name": "Best of 2024",
    "kind": "year",
    "basis": "critics",
-   "count": 57,
+   "count": 55,
    "top": [
     {
      "mbid": "fa566e7b-254a-4fab-8aa5-ebcb7592d7f2",
@@ -180,7 +180,7 @@
    "name": "Israeli & Hebrew",
    "kind": "region",
    "basis": "listeners",
-   "count": 63,
+   "count": 64,
    "top": [
     {
      "mbid": "88e0e066-8a88-445c-84a9-c8ad32efcba6",
@@ -528,7 +528,7 @@
    "name": "Experimental",
    "kind": "genre",
    "basis": "critics",
-   "count": 90,
+   "count": 88,
    "top": [
     {
      "mbid": "5cbd9d7b-597a-3c5e-bfd1-c2b364215560",
@@ -557,7 +557,7 @@
    "name": "Ambient",
    "kind": "genre",
    "basis": "critics",
-   "count": 49,
+   "count": 48,
    "top": [
     {
      "mbid": "f6a51281-56c4-3538-b915-65a9d4eb29b5",
@@ -615,7 +615,7 @@
    "name": "Funk & Disco",
    "kind": "genre",
    "basis": "critics",
-   "count": 81,
+   "count": 79,
    "top": [
     {
      "mbid": "90718403-7634-3786-84bf-2053a7bd4f4c",
@@ -673,7 +673,7 @@
    "name": "Reggae & Dub",
    "kind": "genre",
    "basis": "critics",
-   "count": 30,
+   "count": 32,
    "top": [
     {
      "mbid": "8b6f133a-2fdf-3cc2-b84d-1c889adc0939",
@@ -702,7 +702,7 @@
    "name": "The 60s",
    "kind": "decade",
    "basis": "critics",
-   "count": 100,
+   "count": 97,
    "top": [
     {
      "mbid": "5cbd9d7b-597a-3c5e-bfd1-c2b364215560",
@@ -890,7 +890,7 @@
     },
     {
      "mbid": "0f06bec9-22c7-4f7d-8784-5e902096246b",
-     "title": "Glow On",
+     "title": "GLOW ON",
      "artist": "Turnstile"
     },
     {
