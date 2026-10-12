@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-10-05T11:39:17.717Z",
+ "generatedAt": "2026-10-12T12:11:06.616Z",
  "charts": [
   {
    "id": "greatest",
@@ -35,7 +35,7 @@
    "name": "Best of 2026",
    "kind": "year",
    "basis": "critics",
-   "count": 63,
+   "count": 61,
    "top": [
     {
      "mbid": "4c4eee61-da1e-4115-8eb9-07e5b671fefe",
@@ -93,7 +93,7 @@
    "name": "Best of 2024",
    "kind": "year",
    "basis": "critics",
-   "count": 55,
+   "count": 57,
    "top": [
     {
      "mbid": "fa566e7b-254a-4fab-8aa5-ebcb7592d7f2",
@@ -122,7 +122,7 @@
    "name": "Hidden Gems",
    "kind": "overall",
    "basis": "critics",
-   "count": 100,
+   "count": 97,
    "top": [
     {
      "mbid": "82fd3ab5-0fc9-3a36-8832-65afaf05c2fe",
@@ -198,9 +198,9 @@
      "artist": "טונה"
     },
     {
-     "mbid": "2220b4b2-997c-395a-b88a-e9eb8294ee97",
-     "title": "מציאות נפרדת",
-     "artist": "היהודים"
+     "mbid": "46ab4226-88cc-334a-b62c-1819d1870d95",
+     "title": "צפוף באוזן",
+     "artist": "כוורת"
     }
    ]
   },
@@ -372,9 +372,9 @@
      "artist": "Massive Attack"
     },
     {
-     "mbid": "f6a51281-56c4-3538-b915-65a9d4eb29b5",
-     "title": "Low",
-     "artist": "David Bowie"
+     "mbid": "668e80e0-b35e-4471-9788-0a3d797fe42c",
+     "title": "Melodrama",
+     "artist": "Lorde"
     }
    ]
   },
@@ -528,7 +528,7 @@
    "name": "Experimental",
    "kind": "genre",
    "basis": "critics",
-   "count": 88,
+   "count": 87,
    "top": [
     {
      "mbid": "5cbd9d7b-597a-3c5e-bfd1-c2b364215560",
@@ -560,11 +560,6 @@
    "count": 48,
    "top": [
     {
-     "mbid": "f6a51281-56c4-3538-b915-65a9d4eb29b5",
-     "title": "Low",
-     "artist": "David Bowie"
-    },
-    {
      "mbid": "fddedc4f-7a2e-3d7d-9ec5-1705c416f3f4",
      "title": "Untrue",
      "artist": "Burial"
@@ -578,6 +573,11 @@
      "mbid": "6842c81d-ea77-3dfd-abf7-4323add3f4d4",
      "title": "Selected Ambient Works 85–92",
      "artist": "Aphex Twin"
+    },
+    {
+     "mbid": "a903a977-5932-4cc2-a064-57a596658b3d",
+     "title": "In Colour",
+     "artist": "Jamie xx"
     }
    ]
   },
@@ -586,7 +586,7 @@
    "name": "Latin",
    "kind": "genre",
    "basis": "critics",
-   "count": 40,
+   "count": 39,
    "top": [
     {
      "mbid": "f455f658-dd55-4790-8cd3-99c7c273018a",
@@ -615,7 +615,7 @@
    "name": "Funk & Disco",
    "kind": "genre",
    "basis": "critics",
-   "count": 79,
+   "count": 81,
    "top": [
     {
      "mbid": "90718403-7634-3786-84bf-2053a7bd4f4c",
@@ -673,7 +673,7 @@
    "name": "Reggae & Dub",
    "kind": "genre",
    "basis": "critics",
-   "count": 32,
+   "count": 31,
    "top": [
     {
      "mbid": "8b6f133a-2fdf-3cc2-b84d-1c889adc0939",
@@ -702,7 +702,7 @@
    "name": "The 60s",
    "kind": "decade",
    "basis": "critics",
-   "count": 97,
+   "count": 100,
    "top": [
     {
      "mbid": "5cbd9d7b-597a-3c5e-bfd1-c2b364215560",
