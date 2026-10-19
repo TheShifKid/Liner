@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-10-12T12:11:06.616Z",
+ "generatedAt": "2026-10-19T10:04:50.339Z",
  "charts": [
   {
    "id": "greatest",
@@ -93,7 +93,7 @@
    "name": "Best of 2024",
    "kind": "year",
    "basis": "critics",
-   "count": 57,
+   "count": 56,
    "top": [
     {
      "mbid": "fa566e7b-254a-4fab-8aa5-ebcb7592d7f2",
@@ -122,7 +122,7 @@
    "name": "Hidden Gems",
    "kind": "overall",
    "basis": "critics",
-   "count": 97,
+   "count": 100,
    "top": [
     {
      "mbid": "82fd3ab5-0fc9-3a36-8832-65afaf05c2fe",
@@ -508,7 +508,7 @@
     },
     {
      "mbid": "67727253-f1c0-4243-9270-f9f1401c3b8c",
-     "title": "Red (Taylor’s Version)",
+     "title": "Red (Taylor’s version)",
      "artist": "Taylor Swift"
     },
     {
@@ -528,7 +528,7 @@
    "name": "Experimental",
    "kind": "genre",
    "basis": "critics",
-   "count": 87,
+   "count": 88,
    "top": [
     {
      "mbid": "5cbd9d7b-597a-3c5e-bfd1-c2b364215560",
@@ -557,7 +557,7 @@
    "name": "Ambient",
    "kind": "genre",
    "basis": "critics",
-   "count": 48,
+   "count": 46,
    "top": [
     {
      "mbid": "fddedc4f-7a2e-3d7d-9ec5-1705c416f3f4",
@@ -586,7 +586,7 @@
    "name": "Latin",
    "kind": "genre",
    "basis": "critics",
-   "count": 39,
+   "count": 40,
    "top": [
     {
      "mbid": "f455f658-dd55-4790-8cd3-99c7c273018a",
@@ -890,7 +890,7 @@
     },
     {
      "mbid": "0f06bec9-22c7-4f7d-8784-5e902096246b",
-     "title": "GLOW ON",
+     "title": "Glow On",
      "artist": "Turnstile"
     },
     {
