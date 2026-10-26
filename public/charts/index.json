@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-10-19T10:04:50.339Z",
+ "generatedAt": "2026-10-26T10:25:10.594Z",
  "charts": [
   {
    "id": "greatest",
@@ -35,7 +35,7 @@
    "name": "Best of 2026",
    "kind": "year",
    "basis": "critics",
-   "count": 61,
+   "count": 63,
    "top": [
     {
      "mbid": "4c4eee61-da1e-4115-8eb9-07e5b671fefe",
@@ -93,7 +93,7 @@
    "name": "Best of 2024",
    "kind": "year",
    "basis": "critics",
-   "count": 56,
+   "count": 54,
    "top": [
     {
      "mbid": "fa566e7b-254a-4fab-8aa5-ebcb7592d7f2",
@@ -122,7 +122,7 @@
    "name": "Hidden Gems",
    "kind": "overall",
    "basis": "critics",
-   "count": 100,
+   "count": 99,
    "top": [
     {
      "mbid": "82fd3ab5-0fc9-3a36-8832-65afaf05c2fe",
@@ -314,9 +314,9 @@
      "artist": "Kanye West"
     },
     {
-     "mbid": "c1f22e07-7bdf-4a4f-8b50-7747c1091ef6",
-     "title": "Lemonade",
-     "artist": "Beyoncé"
+     "mbid": "28298e2c-4d70-3eed-a0f5-a3280c662b3d",
+     "title": "Illmatic",
+     "artist": "Nas"
     }
    ]
   },
@@ -508,7 +508,7 @@
     },
     {
      "mbid": "67727253-f1c0-4243-9270-f9f1401c3b8c",
-     "title": "Red (Taylor’s version)",
+     "title": "Red (Taylor’s Version)",
      "artist": "Taylor Swift"
     },
     {
@@ -528,7 +528,7 @@
    "name": "Experimental",
    "kind": "genre",
    "basis": "critics",
-   "count": 88,
+   "count": 87,
    "top": [
     {
      "mbid": "5cbd9d7b-597a-3c5e-bfd1-c2b364215560",
@@ -586,7 +586,7 @@
    "name": "Latin",
    "kind": "genre",
    "basis": "critics",
-   "count": 40,
+   "count": 39,
    "top": [
     {
      "mbid": "f455f658-dd55-4790-8cd3-99c7c273018a",
@@ -673,7 +673,7 @@
    "name": "Reggae & Dub",
    "kind": "genre",
    "basis": "critics",
-   "count": 31,
+   "count": 33,
    "top": [
     {
      "mbid": "8b6f133a-2fdf-3cc2-b84d-1c889adc0939",
@@ -860,14 +860,14 @@
      "artist": "Kanye West"
     },
     {
-     "mbid": "c1f22e07-7bdf-4a4f-8b50-7747c1091ef6",
-     "title": "Lemonade",
-     "artist": "Beyoncé"
-    },
-    {
      "mbid": "b88655ba-7469-48b8-a296-b9011ab73ef3",
      "title": "DAMN.",
      "artist": "Kendrick Lamar"
+    },
+    {
+     "mbid": "21666540-83c8-4c54-9be1-0363a0848f33",
+     "title": "Carrie & Lowell",
+     "artist": "Sufjan Stevens"
     }
    ]
   },
@@ -890,7 +890,7 @@
     },
     {
      "mbid": "0f06bec9-22c7-4f7d-8784-5e902096246b",
-     "title": "Glow On",
+     "title": "GLOW ON",
      "artist": "Turnstile"
     },
     {
