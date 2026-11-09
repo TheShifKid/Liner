@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-11-02T12:36:35.510Z",
+ "generatedAt": "2026-11-09T13:02:30.265Z",
  "charts": [
   {
    "id": "greatest",
@@ -93,7 +93,7 @@
    "name": "Best of 2024",
    "kind": "year",
    "basis": "critics",
-   "count": 55,
+   "count": 56,
    "top": [
     {
      "mbid": "fa566e7b-254a-4fab-8aa5-ebcb7592d7f2",
@@ -122,7 +122,7 @@
    "name": "Hidden Gems",
    "kind": "overall",
    "basis": "critics",
-   "count": 100,
+   "count": 96,
    "top": [
     {
      "mbid": "82fd3ab5-0fc9-3a36-8832-65afaf05c2fe",
@@ -180,7 +180,7 @@
    "name": "Israeli & Hebrew",
    "kind": "region",
    "basis": "listeners",
-   "count": 63,
+   "count": 62,
    "top": [
     {
      "mbid": "88e0e066-8a88-445c-84a9-c8ad32efcba6",
@@ -528,7 +528,7 @@
    "name": "Experimental",
    "kind": "genre",
    "basis": "critics",
-   "count": 88,
+   "count": 86,
    "top": [
     {
      "mbid": "5cbd9d7b-597a-3c5e-bfd1-c2b364215560",
@@ -586,7 +586,7 @@
    "name": "Latin",
    "kind": "genre",
    "basis": "critics",
-   "count": 39,
+   "count": 38,
    "top": [
     {
      "mbid": "f455f658-dd55-4790-8cd3-99c7c273018a",
@@ -615,7 +615,7 @@
    "name": "Funk & Disco",
    "kind": "genre",
    "basis": "critics",
-   "count": 75,
+   "count": 74,
    "top": [
     {
      "mbid": "90718403-7634-3786-84bf-2053a7bd4f4c",
@@ -673,7 +673,7 @@
    "name": "Reggae & Dub",
    "kind": "genre",
    "basis": "critics",
-   "count": 31,
+   "count": 29,
    "top": [
     {
      "mbid": "8b6f133a-2fdf-3cc2-b84d-1c889adc0939",
