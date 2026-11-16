@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-11-09T13:02:30.265Z",
+ "generatedAt": "2026-11-16T13:09:00.285Z",
  "charts": [
   {
    "id": "greatest",
@@ -35,7 +35,7 @@
    "name": "Best of 2026",
    "kind": "year",
    "basis": "critics",
-   "count": 64,
+   "count": 65,
    "top": [
     {
      "mbid": "4c4eee61-da1e-4115-8eb9-07e5b671fefe",
@@ -122,7 +122,7 @@
    "name": "Hidden Gems",
    "kind": "overall",
    "basis": "critics",
-   "count": 96,
+   "count": 100,
    "top": [
     {
      "mbid": "82fd3ab5-0fc9-3a36-8832-65afaf05c2fe",
@@ -180,13 +180,8 @@
    "name": "Israeli & Hebrew",
    "kind": "region",
    "basis": "listeners",
-   "count": 62,
+   "count": 60,
    "top": [
-    {
-     "mbid": "88e0e066-8a88-445c-84a9-c8ad32efcba6",
-     "title": "חומר מקומי",
-     "artist": "הדג נחש"
-    },
     {
      "mbid": "5448a2ae-ebf6-3428-a9e8-79d5e276b2a8",
      "title": "קדישKaddish",
@@ -201,6 +196,11 @@
      "mbid": "46ab4226-88cc-334a-b62c-1819d1870d95",
      "title": "צפוף באוזן",
      "artist": "כוורת"
+    },
+    {
+     "mbid": "2220b4b2-997c-395a-b88a-e9eb8294ee97",
+     "title": "מציאות נפרדת",
+     "artist": "היהודים"
     }
    ]
   },
@@ -528,7 +528,7 @@
    "name": "Experimental",
    "kind": "genre",
    "basis": "critics",
-   "count": 86,
+   "count": 88,
    "top": [
     {
      "mbid": "5cbd9d7b-597a-3c5e-bfd1-c2b364215560",
@@ -586,7 +586,7 @@
    "name": "Latin",
    "kind": "genre",
    "basis": "critics",
-   "count": 38,
+   "count": 39,
    "top": [
     {
      "mbid": "f455f658-dd55-4790-8cd3-99c7c273018a",
@@ -615,7 +615,7 @@
    "name": "Funk & Disco",
    "kind": "genre",
    "basis": "critics",
-   "count": 74,
+   "count": 76,
    "top": [
     {
      "mbid": "90718403-7634-3786-84bf-2053a7bd4f4c",
@@ -673,7 +673,7 @@
    "name": "Reggae & Dub",
    "kind": "genre",
    "basis": "critics",
-   "count": 29,
+   "count": 32,
    "top": [
     {
      "mbid": "8b6f133a-2fdf-3cc2-b84d-1c889adc0939",
@@ -702,7 +702,7 @@
    "name": "The 60s",
    "kind": "decade",
    "basis": "critics",
-   "count": 100,
+   "count": 99,
    "top": [
     {
      "mbid": "5cbd9d7b-597a-3c5e-bfd1-c2b364215560",
