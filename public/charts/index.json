@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-11-16T13:09:00.285Z",
+ "generatedAt": "2026-11-23T15:14:06.442Z",
  "charts": [
   {
    "id": "greatest",
@@ -35,7 +35,7 @@
    "name": "Best of 2026",
    "kind": "year",
    "basis": "critics",
-   "count": 65,
+   "count": 66,
    "top": [
     {
      "mbid": "4c4eee61-da1e-4115-8eb9-07e5b671fefe",
@@ -93,7 +93,7 @@
    "name": "Best of 2024",
    "kind": "year",
    "basis": "critics",
-   "count": 56,
+   "count": 55,
    "top": [
     {
      "mbid": "fa566e7b-254a-4fab-8aa5-ebcb7592d7f2",
@@ -122,7 +122,7 @@
    "name": "Hidden Gems",
    "kind": "overall",
    "basis": "critics",
-   "count": 100,
+   "count": 99,
    "top": [
     {
      "mbid": "82fd3ab5-0fc9-3a36-8832-65afaf05c2fe",
@@ -180,7 +180,7 @@
    "name": "Israeli & Hebrew",
    "kind": "region",
    "basis": "listeners",
-   "count": 60,
+   "count": 59,
    "top": [
     {
      "mbid": "5448a2ae-ebf6-3428-a9e8-79d5e276b2a8",
@@ -528,7 +528,7 @@
    "name": "Experimental",
    "kind": "genre",
    "basis": "critics",
-   "count": 88,
+   "count": 86,
    "top": [
     {
      "mbid": "5cbd9d7b-597a-3c5e-bfd1-c2b364215560",
@@ -546,9 +546,9 @@
      "artist": "Tom Waits"
     },
     {
-     "mbid": "055be730-dcad-31bf-b550-45ba9c202aa3",
-     "title": "The Beatles",
-     "artist": "The Beatles"
+     "mbid": "bb3ec118-57df-4eb9-a8fe-a26a70a7dbe0",
+     "title": "LUX",
+     "artist": "ROSALÍA"
     }
    ]
   },
@@ -557,7 +557,7 @@
    "name": "Ambient",
    "kind": "genre",
    "basis": "critics",
-   "count": 46,
+   "count": 45,
    "top": [
     {
      "mbid": "fddedc4f-7a2e-3d7d-9ec5-1705c416f3f4",
@@ -586,7 +586,7 @@
    "name": "Latin",
    "kind": "genre",
    "basis": "critics",
-   "count": 39,
+   "count": 40,
    "top": [
     {
      "mbid": "f455f658-dd55-4790-8cd3-99c7c273018a",
@@ -615,7 +615,7 @@
    "name": "Funk & Disco",
    "kind": "genre",
    "basis": "critics",
-   "count": 76,
+   "count": 78,
    "top": [
     {
      "mbid": "90718403-7634-3786-84bf-2053a7bd4f4c",
@@ -702,7 +702,7 @@
    "name": "The 60s",
    "kind": "decade",
    "basis": "critics",
-   "count": 99,
+   "count": 94,
    "top": [
     {
      "mbid": "5cbd9d7b-597a-3c5e-bfd1-c2b364215560",
@@ -879,14 +879,14 @@
    "count": 100,
    "top": [
     {
-     "mbid": "fa566e7b-254a-4fab-8aa5-ebcb7592d7f2",
-     "title": "COWBOY CARTER",
-     "artist": "Beyoncé"
-    },
-    {
      "mbid": "bb3ec118-57df-4eb9-a8fe-a26a70a7dbe0",
      "title": "LUX",
      "artist": "ROSALÍA"
+    },
+    {
+     "mbid": "fa566e7b-254a-4fab-8aa5-ebcb7592d7f2",
+     "title": "COWBOY CARTER",
+     "artist": "Beyoncé"
     },
     {
      "mbid": "0f06bec9-22c7-4f7d-8784-5e902096246b",
